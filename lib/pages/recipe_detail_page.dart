@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 class RecipeDetailPage extends StatelessWidget {
@@ -14,14 +15,14 @@ class RecipeDetailPage extends StatelessWidget {
     final List<dynamic> ingredients = recipe['ingredients'] ?? [];
     final List<dynamic> steps = recipe['steps'] ?? [];
 
+    final String imagePath = recipe['image']?.toString() ?? '';
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F3EA),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // =====================================================
             // NAVBAR
-            // =====================================================
             Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: 50,
@@ -39,7 +40,6 @@ class RecipeDetailPage extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  // LOGO
                   const Text(
                     'DelicId',
                     style: TextStyle(
@@ -48,10 +48,7 @@ class RecipeDetailPage extends StatelessWidget {
                       color: Color(0xFF493B32),
                     ),
                   ),
-
                   const Spacer(),
-
-                  // KEMBALI
                   TextButton.icon(
                     onPressed: () {
                       Navigator.pop(context);
@@ -72,56 +69,45 @@ class RecipeDetailPage extends StatelessWidget {
               ),
             ),
 
-            // =====================================================
             // GAMBAR RESEP
-            // =====================================================
             Padding(
-              padding: const EdgeInsets.fromLTRB(
-                60,
-                40,
-                60,
-                0,
-              ),
+              padding: const EdgeInsets.fromLTRB(60, 40, 60, 0),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(25),
-                child: Image.network(
-                  recipe['image'],
-                  width: double.infinity,
-                  height: 350,
-                  fit: BoxFit.cover,
-                  errorBuilder:
-                      (context, error, stackTrace) {
-                    return Container(
-                      height: 350,
-                      color: const Color(0xFFEFD5B8),
-                      child: const Center(
-                        child: Icon(
-                          Icons.restaurant,
-                          size: 80,
-                          color: Color(0xFF493B32),
-                        ),
+                child: imagePath.startsWith('http')
+                    ? Image.network(
+                        imagePath,
+                        width: double.infinity,
+                        height: 350,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return _imageFallback();
+                        },
+                      )
+                    : Image.asset(
+                        imagePath,
+                        width: double.infinity,
+                        height: 350,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return _imageFallback();
+                        },
                       ),
-                    );
-                  },
-                ),
               ),
             ),
 
-            // =====================================================
             // INFORMASI RESEP
-            // =====================================================
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 60,
                 vertical: 35,
               ),
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // NAMA RESEP
                   Text(
-                    recipe['name'],
+                    recipe['name']?.toString() ?? 'Nama Resep',
                     style: const TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
@@ -139,11 +125,9 @@ class RecipeDetailPage extends StatelessWidget {
                         color: Color(0xFFD69B2D),
                         size: 25,
                       ),
-
                       const SizedBox(width: 8),
-
                       Text(
-                        recipe['rating'],
+                        recipe['rating']?.toString() ?? '-',
                         style: const TextStyle(
                           fontSize: 18,
                           color: Color(0xFF66564C),
@@ -156,7 +140,8 @@ class RecipeDetailPage extends StatelessWidget {
 
                   // DESKRIPSI
                   Text(
-                    recipe['description'],
+                    recipe['description']?.toString() ??
+                        'Belum ada deskripsi resep.',
                     style: const TextStyle(
                       fontSize: 17,
                       color: Color(0xFF66564C),
@@ -166,174 +151,73 @@ class RecipeDetailPage extends StatelessWidget {
 
                   const SizedBox(height: 40),
 
-                  // =================================================
                   // ALAT
-                  // =================================================
                   _sectionTitle(
                     icon: Icons.kitchen_outlined,
                     title: 'Alat',
                   ),
-
                   const SizedBox(height: 15),
-
                   _whiteBox(
-                    child: Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment.start,
-                      children: tools.map((tool) {
-                        return Padding(
-                          padding:
-                              const EdgeInsets.only(
-                            bottom: 10,
-                          ),
-                          child: Row(
-                            crossAxisAlignment:
-                                CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                '• ',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color:
-                                      Color(0xFF493B32),
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  tool.toString(),
-                                  style:
-                                      const TextStyle(
-                                    fontSize: 16,
-                                    color:
-                                        Color(0xFF66564C),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                    ),
+                    child: _bulletList(tools),
                   ),
 
                   const SizedBox(height: 35),
 
-                  // =================================================
                   // BAHAN
-                  // =================================================
                   _sectionTitle(
                     icon: Icons.shopping_basket_outlined,
                     title: 'Bahan',
                   ),
-
                   const SizedBox(height: 15),
-
                   _whiteBox(
-                    child: Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment.start,
-                      children:
-                          ingredients.map((ingredient) {
-                        return Padding(
-                          padding:
-                              const EdgeInsets.only(
-                            bottom: 10,
-                          ),
-                          child: Row(
-                            crossAxisAlignment:
-                                CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                '• ',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color:
-                                      Color(0xFF493B32),
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  ingredient.toString(),
-                                  style:
-                                      const TextStyle(
-                                    fontSize: 16,
-                                    color:
-                                        Color(0xFF66564C),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                    ),
+                    child: _bulletList(ingredients),
                   ),
 
                   const SizedBox(height: 35),
 
-                  // =================================================
                   // CARA MEMBUAT
-                  // =================================================
                   _sectionTitle(
                     icon: Icons.restaurant_menu,
                     title: 'Cara Membuat',
                   ),
-
                   const SizedBox(height: 15),
-
                   _whiteBox(
                     child: Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment.start,
-                      children:
-                          List.generate(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: List.generate(
                         steps.length,
                         (index) {
                           return Padding(
-                            padding:
-                                const EdgeInsets.only(
+                            padding: const EdgeInsets.only(
                               bottom: 18,
                             ),
                             child: Row(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment
-                                      .start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
                                   width: 32,
                                   height: 32,
-                                  decoration:
-                                      const BoxDecoration(
-                                    color:
-                                        Color(0xFF493B32),
-                                    shape:
-                                        BoxShape.circle,
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xFF493B32),
+                                    shape: BoxShape.circle,
                                   ),
                                   child: Center(
                                     child: Text(
                                       '${index + 1}',
-                                      style:
-                                          const TextStyle(
-                                        color:
-                                            Colors.white,
-                                        fontWeight:
-                                            FontWeight.bold,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
                                 ),
-
                                 const SizedBox(width: 15),
-
                                 Expanded(
                                   child: Text(
-                                    steps[index]
-                                        .toString(),
-                                    style:
-                                        const TextStyle(
+                                    steps[index].toString(),
+                                    style: const TextStyle(
                                       fontSize: 16,
-                                      color:
-                                          Color(0xFF66564C),
+                                      color: Color(0xFF66564C),
                                       height: 1.5,
                                     ),
                                   ),
@@ -351,9 +235,7 @@ class RecipeDetailPage extends StatelessWidget {
               ),
             ),
 
-            // =====================================================
             // FOOTER
-            // =====================================================
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(30),
@@ -368,9 +250,7 @@ class RecipeDetailPage extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
-
                   SizedBox(height: 10),
-
                   Text(
                     'Cooking & Bakery',
                     style: TextStyle(
@@ -379,9 +259,7 @@ class RecipeDetailPage extends StatelessWidget {
                       color: Colors.white70,
                     ),
                   ),
-
                   SizedBox(height: 10),
-
                   Text(
                     '© 2026 DelicId',
                     style: TextStyle(
@@ -397,10 +275,66 @@ class RecipeDetailPage extends StatelessWidget {
     );
   }
 
-  // ============================================================
-  // JUDUL SECTION
-  // ============================================================
+  // GAMBAR CADANGAN JIKA GAMBAR GAGAL DIMUAT
+  Widget _imageFallback() {
+    return Container(
+      width: double.infinity,
+      height: 350,
+      color: const Color(0xFFEFD5B8),
+      child: const Center(
+        child: Icon(
+          Icons.restaurant,
+          size: 80,
+          color: Color(0xFF493B32),
+        ),
+      ),
+    );
+  }
 
+  // DAFTAR ALAT DAN BAHAN
+  Widget _bulletList(List<dynamic> items) {
+    if (items.isEmpty) {
+      return const Text(
+        'Belum ada data.',
+        style: TextStyle(
+          fontSize: 16,
+          color: Color(0xFF66564C),
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: items.map((item) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                '• ',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Color(0xFF493B32),
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  item.toString(),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Color(0xFF66564C),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  // JUDUL BAGIAN
   Widget _sectionTitle({
     required IconData icon,
     required String title,
@@ -412,9 +346,7 @@ class RecipeDetailPage extends StatelessWidget {
           color: const Color(0xFF493B32),
           size: 28,
         ),
-
         const SizedBox(width: 10),
-
         Text(
           title,
           style: const TextStyle(
@@ -427,10 +359,7 @@ class RecipeDetailPage extends StatelessWidget {
     );
   }
 
-  // ============================================================
   // KOTAK PUTIH
-  // ============================================================
-
   Widget _whiteBox({
     required Widget child,
   }) {
@@ -442,7 +371,7 @@ class RecipeDetailPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+           color: Colors.black.withValues(alpha: 0.06),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),

@@ -399,7 +399,7 @@ class HomePage extends StatelessWidget {
   // COOKING CLASS CARD
   // ============================================================
 
-  Widget_classCard(
+  Widget classCard(
     String title,
     String description,
     IconData icon,

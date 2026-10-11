@@ -19,42 +19,12 @@ dev_dependencies:
 
   flutter_lints: ^6.0.0
 
+
 flutter:
   uses-material-design: true
 
   assets:
-    -  assets/logo_login.png
-    -  assets/background_about_us.png
-    -  assets/profile_widya.jpeg
-    -  assets/rendang.jpeg
-    -  assets/rawon.webp
-    -  assets/sop_daging.jpeg
-    -  assets/tongseng.jpeg
-    -  assets/semur_daging.jpeg
-    -  assets/ikan_bakar.jpeg
-    -  assets/gurame.jpeg
-    -  assets/pepes_ikan.jpeg
-    -  assets/salmon.jpeg
-    -  assets/tuna.jpeg
-    -  assets/sarden.jpeg
-    -  assets/cumi.jpeg
-    -  assets/ayam_bakar.jpeg
-    -  assets/geprek.jpeg
-    -  assets/katsu.jpeg
-    -  assets/opor.jpeg
-    -  assets/rica.jpeg
-    -  assets/teriyaki.jpeg
-    -  assets/mie_instan.jpeg
-    -  assets/mie_ayam.jpeg
-    -  assets/kwetiau.jpeg
-    -  assets/bihun.jpeg
-    -  assets/mie_goreng.jpeg
-    -  assets/soto.jpeg
-    -  assets/garlic.jpeg
-    -  assets/roti_sobek.jpeg
-    -  assets/baguette.jpeg
-    -  assets/gado.jpeg
-    -  assets/pecel.jpeg
+    - assets/
 
   fonts:
     - family: Diplomata

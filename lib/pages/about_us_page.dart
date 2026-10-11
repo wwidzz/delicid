@@ -135,7 +135,8 @@ class AboutUsPage extends StatelessWidget {
                   // ===================================================
                   Positioned.fill(
                     child: Container(
-                      color: const Color(0xFFF8F3EA).withOpacity(0.45),
+                      color: const Color(0xFFF8F3EA).withValues(alpha: 0.45),
+
                     ),
                   ),
 
@@ -305,8 +306,8 @@ class AboutUsPage extends StatelessWidget {
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: const Color(0xFF493B32)
-                                            .withOpacity(0.12),
+                                      color: const Color(0xFF493B32)
+                                          .withValues(alpha: 0.12),
                                         blurRadius: 25,
                                         spreadRadius: 2,
                                         offset: const Offset(0, 10),
@@ -333,7 +334,7 @@ class AboutUsPage extends StatelessWidget {
                                     vertical: 35,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.94),
+                                    color: Colors.white.withValues(alpha: 0.94),
                                     borderRadius: BorderRadius.circular(24),
                                     border: Border.all(
                                       color: const Color(0xFFE3D4C5),
@@ -342,7 +343,7 @@ class AboutUsPage extends StatelessWidget {
                                     boxShadow: [
                                       BoxShadow(
                                         color: const Color(0xFF493B32)
-                                            .withOpacity(0.08),
+                                          .withValues(alpha: 0.08),
                                         blurRadius: 25,
                                         offset: const Offset(0, 10),
                                       ),

@@ -93,13 +93,13 @@ class VideoPage extends StatelessWidget {
                         height: 470,
                         decoration: BoxDecoration(
                           color: const Color(0xFF493B32)
-                              .withOpacity(0.92),
+                               .withValues(alpha: 0.92),
                           borderRadius:
                               BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
                               color:
-                                  Colors.black.withOpacity(0.15),
+                                 Colors.black.withValues(alpha: 0.15),
                               blurRadius: 15,
                               offset: const Offset(0, 6),
                             ),

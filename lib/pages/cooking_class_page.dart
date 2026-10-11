@@ -101,7 +101,7 @@ class CookingClassPage extends StatelessWidget {
 
           Positioned.fill(
             child: Container(
-              color: const Color(0xFFF8F3EA).withOpacity(0.40),
+              color: const Color(0xFFF8F3EA).withValues(alpha: 0.40),
             ),
           ),
 
@@ -392,11 +392,11 @@ class CookingClassPage extends StatelessWidget {
       width: double.infinity,
       height: 150,
       decoration: BoxDecoration(
-        color: const Color(0xFFB89580).withOpacity(0.82),
+        color: const Color(0xFFB89580).withValues(alpha: 0.82),
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.12),
+            color: Colors.black.withValues(alpha: 0.12),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -514,7 +514,7 @@ class CookingClassPage extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor:
                     const Color(0xFF493B32)
-                        .withOpacity(0.85),
+                        .withValues(alpha: 0.85),
                 foregroundColor: Colors.white,
                 elevation: 0,
                 padding: const EdgeInsets.symmetric(
@@ -543,18 +543,18 @@ class CookingClassPage extends StatelessWidget {
   // CARD
   // =========================================================
 
-  Widget_classCard(
+  Widget classCard(
     BuildContext context,
     Map<String, dynamic> cookingClass,
   ) {
     return Container(
       width: 190,
       decoration: BoxDecoration(
-        color: const Color(0xFFB89580).withOpacity(0.82),
+        color: const Color(0xFFB89580).withValues(alpha: 0.82),
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.12),
+            color: Colors.black.withValues(alpha: 0.12),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -676,7 +676,7 @@ class CookingClassPage extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
                           const Color(0xFF493B32)
-                              .withOpacity(0.85),
+                              .withValues(alpha: 0.85),
                       foregroundColor: Colors.white,
                       elevation: 0,
                       shape:

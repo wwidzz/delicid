@@ -628,7 +628,7 @@ class _RecipePageState extends State<RecipePage>
           Positioned.fill(
             child: Container(
               color:
-                  const Color(0xFFF8F3EA).withOpacity(0.68),
+                  const Color(0xFFF8F3EA).withValues(alpha: 0.68),
             ),
           ),
 
@@ -791,7 +791,7 @@ class _RecipePageState extends State<RecipePage>
                       filled: true,
 
                       fillColor:
-                          Colors.white.withOpacity(0.94),
+                          Colors.white.withValues(alpha: 0.94),
 
                       contentPadding:
                           const EdgeInsets.symmetric(
@@ -924,13 +924,13 @@ class _RecipePageState extends State<RecipePage>
             decoration: BoxDecoration(
               color:
                   const Color(0xFFC09A8A)
-                      .withOpacity(0.72),
+                      .withValues(alpha: 0.72),
               borderRadius:
                   BorderRadius.circular(15),
               boxShadow: [
                 BoxShadow(
                   color:
-                      Colors.black.withOpacity(0.10),
+                      Colors.black.withValues(alpha: 0.10),
                   blurRadius: 8,
                   offset:
                       const Offset(0, 4),
@@ -1108,11 +1108,11 @@ class _RecipePageState extends State<RecipePage>
       width: 205,
       decoration: BoxDecoration(
         // COKLAT MUDA AGAK PINK + LEBIH TRANSPARAN
-        color: const Color(0xFFC09A8A).withOpacity(0.72),
+        color: const Color(0xFFC09A8A).withValues(alpha: 0.72),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.15),
+            color: Colors.black.withValues(alpha: 0.15),
             blurRadius: 12,
             offset: const Offset(0, 5),
           ),
@@ -1121,30 +1121,51 @@ class _RecipePageState extends State<RecipePage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // GAMBAR
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(16),
-            ),
-            child: Image.network(
-              recipe['image'],
+// GAMBAR
+          
+ClipRRect(
+  borderRadius: const BorderRadius.vertical(
+    top: Radius.circular(16),
+  ),
+  child: recipe['image'].toString().startsWith('http')
+      ? Image.network(
+          recipe['image'],
+          width: double.infinity,
+          height: 145,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
               width: double.infinity,
               height: 145,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  width: double.infinity,
-                  height: 145,
-                  color: const Color(0xFFEFD5B8),
-                  child: const Icon(
-                    Icons.restaurant,
-                    size: 45,
-                    color: Color(0xFF493B32),
-                  ),
-                );
-              },
-            ),
-          ),
+              color: const Color(0xFFEFD5B8),
+              child: const Icon(
+                Icons.restaurant,
+                size: 45,
+                color: Color(0xFF493B32),
+              ),
+            );
+          },
+        )
+      : Image.asset(
+          recipe['image'],
+          width: double.infinity,
+          height: 145,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              width: double.infinity,
+              height: 145,
+              color: const Color(0xFFEFD5B8),
+              child: const Icon(
+                Icons.restaurant,
+                size: 45,
+                color: Color(0xFF493B32),
+              ),
+            );
+          },
+        ),
+),
+
 
           // INFORMASI
           Padding(
@@ -1236,7 +1257,7 @@ class _RecipePageState extends State<RecipePage>
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
-                            const Color(0xFF493B32).withOpacity(0.78),
+                           const Color(0xFF493B32).withValues(alpha: 0.78),
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 13,
