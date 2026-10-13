@@ -409,12 +409,19 @@ class CookingClassPage extends StatelessWidget {
             borderRadius: const BorderRadius.horizontal(
               left: Radius.circular(14),
             ),
-            child: Image.network(
-              cookingClass['image'],
-              width: 190,
-              height: 150,
-              fit: BoxFit.cover,
-            ),
+            child: cookingClass['image'].toString().startsWith('assets/')
+                ? Image.asset(
+                    cookingClass['image'],
+                    width: 190,
+                    height: 150,
+                    fit: BoxFit.cover,
+                  )
+                : Image.network(
+                    cookingClass['image'],
+                    width: 190,
+                    height: 150,
+                    fit: BoxFit.cover,
+                  ),
           ),
 
           // INFORMASI KELAS
@@ -566,16 +573,22 @@ class CookingClassPage extends StatelessWidget {
         children: [
           // GAMBAR
           ClipRRect(
-            borderRadius:
-                const BorderRadius.vertical(
+            borderRadius: const BorderRadius.vertical(
               top: Radius.circular(14),
             ),
-            child: Image.network(
-              cookingClass['image'],
-              width: double.infinity,
-              height: 125,
-              fit: BoxFit.cover,
-            ),
+            child: cookingClass['image'].toString().startsWith('assets/')
+                ? Image.asset(
+                    cookingClass['image'],
+                    width: double.infinity,
+                    height: 125,
+                    fit: BoxFit.cover,
+                  )
+                : Image.network(
+                    cookingClass['image'],
+                    width: double.infinity,
+                    height: 125,
+                    fit: BoxFit.cover,
+                  ),
           ),
 
           Padding(
@@ -726,16 +739,22 @@ class CookingClassPage extends StatelessWidget {
               children: [
                 // GAMBAR
                 ClipRRect(
-                  borderRadius:
-                      const BorderRadius.vertical(
+                  borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(20),
                   ),
-                  child: Image.network(
-                    cookingClass['image'],
-                    width: double.infinity,
-                    height: 230,
-                    fit: BoxFit.cover,
-                  ),
+                  child: cookingClass['image'].toString().startsWith('assets/')
+                      ? Image.asset(
+                          cookingClass['image'],
+                          width: double.infinity,
+                          height: 230,
+                          fit: BoxFit.cover,
+                        )
+                      : Image.network(
+                          cookingClass['image'],
+                          width: double.infinity,
+                          height: 230,
+                          fit: BoxFit.cover,
+                        ),
                 ),
 
                 Padding(
