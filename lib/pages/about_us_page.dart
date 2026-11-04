@@ -31,6 +31,13 @@ class AboutUsPage extends StatelessWidget {
       'univ': 'Universitas Negeri Surabaya',
       'foto': 'assets/profile_farhan.jpeg',
     },
+    {
+      'nama': 'HENDRI DWI MUKTI WIBOWO',
+      'nim': '25051204417',
+      'prodi': 'Teknik Informatika',
+      'univ': 'Universitas Negeri Surabaya',
+      'foto': 'assets/profile_hendri.jpeg',
+    },
   ];
 
   @override
