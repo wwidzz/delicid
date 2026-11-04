@@ -18,11 +18,11 @@ class AboutUsPage extends StatelessWidget {
       'foto': 'assets/profile_daffa.jpeg', // Jalur foto otomatis digabung dengan assets/
     },
     {
-      'nama': 'Nama Anggota 2',
-      'nim': 'NIM Anggota 2',
+      'nama': 'WIDYA PRAMUDYANING TYAS',
+      'nim': '25051204405',
       'prodi': 'Teknik Informatika',
       'univ': 'Universitas Negeri Surabaya',
-      'foto': 'logo_login.png',
+      'foto': 'assets/profile_widya.jpeg',
     },
   ];
 
