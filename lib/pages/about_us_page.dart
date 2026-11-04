@@ -38,6 +38,13 @@ class AboutUsPage extends StatelessWidget {
       'univ': 'Universitas Negeri Surabaya',
       'foto': 'assets/profile_hendri.jpeg',
     },
+    {
+      'nama': 'ANAQITA NAZILA RIZKYA CAHYANA',
+      'nim': '25051204399',
+      'prodi': 'Teknik Informatika',
+      'univ': 'Universitas Negeri Surabaya',
+      'foto': 'assets/profile_anaqita.jpeg',
+    },
   ];
 
   @override
