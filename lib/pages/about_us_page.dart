@@ -24,6 +24,13 @@ class AboutUsPage extends StatelessWidget {
       'univ': 'Universitas Negeri Surabaya',
       'foto': 'assets/profile_widya.jpeg',
     },
+    {
+      'nama': 'FARHAN FAUZAN AZIMA',
+      'nim': '25051204389',
+      'prodi': 'Teknik Informatika',
+      'univ': 'Universitas Negeri Surabaya',
+      'foto': 'assets/profile_farhan.jpeg',
+    },
   ];
 
   @override
