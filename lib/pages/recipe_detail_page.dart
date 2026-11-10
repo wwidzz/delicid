@@ -12,10 +12,10 @@ class RecipeDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<dynamic> tools = recipe['tools'] ?? [];
-    final List<dynamic> ingredients = recipe['ingredients'] ?? [];
-    final List<dynamic> steps = recipe['steps'] ?? [];
+final List<dynamic> ingredients = recipe['ingredients'] ?? [];
+final List<dynamic> steps = recipe['steps'] ?? [];
 
-    final String imagePath = recipe['image']?.toString() ?? '';
+final String imagePath = recipe['image']?.toString() ?? '';
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F3EA),
