@@ -1,9 +1,10 @@
+import '../data/api_service.dart';
+import '../data/recipe_model.dart';
 import 'package:flutter/material.dart';
 import 'about_us_page.dart';
 import 'cooking_class_page.dart';
 import 'profil_page.dart';
 import '../data/favorite_recipe_data.dart';
-import '../data/recipe_data.dart';
 import 'recipe_detail_page.dart';
 
 class RecipePage extends StatefulWidget {
@@ -15,30 +16,34 @@ class RecipePage extends StatefulWidget {
 
 class _RecipePageState extends State<RecipePage>
     with SingleTickerProviderStateMixin {
-  late AnimationController _backgroundController;
 
-  final TextEditingController searchController =
-      TextEditingController();
+  final ApiService apiService = ApiService();
+late Future<List<RecipeModel>> recipesFuture;
+late AnimationController _backgroundController;
+final TextEditingController searchController =
+    TextEditingController();
 
-  String searchText = '';
+String searchText = '';
 
-  @override
-  void initState() {
-    super.initState();
+ @override
+void initState() {
+  super.initState();
 
-    _backgroundController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 12),
-    )..repeat(reverse: true);
-  }
+  recipesFuture = apiService.fetchRecipes();
+
+  _backgroundController = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 12),
+  )..repeat(reverse: true);
+}
 
   @override
   void dispose() {
     _backgroundController.dispose();
     searchController.dispose();
     super.dispose();
-  }
-
+  
+}
   // =========================================================
   // DATA RESEP
   // =========================================================
@@ -556,21 +561,24 @@ class _RecipePageState extends State<RecipePage>
   // FILTER RESEP
   // =========================================================
 
-  List<Map<String, dynamic>> getRecipes(String category) {
-    return recipes.where((recipe) {
-      final bool sameCategory =
-          recipe['category'] == category;
+  List<Map<String, dynamic>> getRecipes(
+  String category,
+  List<Map<String, dynamic>> allRecipes,
+) {
+  return allRecipes.where((recipe) {
+    final bool sameCategory =
+        recipe['category'] == category;
 
-      final String name =
-          recipe['name'].toString().toLowerCase();
+    final String name =
+        recipe['name'].toString().toLowerCase();
 
-      final bool matchesSearch =
-          searchText.isEmpty ||
-          name.contains(searchText.toLowerCase());
+    final bool matchesSearch =
+        searchText.isEmpty ||
+        name.contains(searchText.toLowerCase());
 
-      return sameCategory && matchesSearch;
-    }).toList();
-  }
+    return sameCategory && matchesSearch;
+  }).toList();
+}
 
   // =========================================================
   // BUILD
@@ -753,98 +761,146 @@ class _RecipePageState extends State<RecipePage>
                 // =================================================
 
                 SizedBox(
-                  width: 470,
-                  child: TextField(
-                    controller: searchController,
+  width: 470,
+  child: TextField(
+    controller: searchController,
 
-                    onChanged: (value) {
-                      setState(() {
-                        searchText = value.trim();
-                      });
-                    },
+    onChanged: (value) {
+      setState(() {
+        searchText = value.trim();
+      });
+    },
 
-                    decoration: InputDecoration(
-                      hintText: 'Cari resep...',
+    onSubmitted: (value) {
+      setState(() {
+        searchText = value.trim();
+        recipesFuture = apiService.fetchRecipes(
+          query: value.trim(),
+        );
+      });
+    },
 
-                      hintStyle: const TextStyle(
-                        color: Color(0xFF9B8A7C),
-                      ),
+    decoration: InputDecoration(
+      hintText: 'Cari resep...',
+      hintStyle: const TextStyle(
+        color: Color(0xFF9B8A7C),
+      ),
 
-                      prefixIcon: const Icon(
-                        Icons.search,
-                        color: Color(0xFF79675B),
-                      ),
+      prefixIcon: const Icon(
+        Icons.search,
+        color: Color(0xFF79675B),
+      ),
 
-                      suffixIcon: Container(
-                        margin: const EdgeInsets.all(5),
-                        decoration: const BoxDecoration(
-                          color: Color(0xFF493B32),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.search,
-                          color: Colors.white,
-                          size: 19,
-                        ),
-                      ),
+      suffixIcon: Container(
+        margin: const EdgeInsets.all(5),
+        decoration: const BoxDecoration(
+          color: Color(0xFF493B32),
+          shape: BoxShape.circle,
+        ),
+        child: const Icon(
+          Icons.search,
+          color: Colors.white,
+          size: 19,
+        ),
+      ),
 
-                      filled: true,
+      filled: true,
+      fillColor: Colors.white.withValues(alpha: 0.94),
 
-                      fillColor:
-                          Colors.white.withValues(alpha: 0.94),
+      contentPadding: const EdgeInsets.symmetric(
+        vertical: 17,
+        horizontal: 15,
+      ),
 
-                      contentPadding:
-                          const EdgeInsets.symmetric(
-                        vertical: 17,
-                        horizontal: 15,
-                      ),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30),
+        borderSide: BorderSide.none,
+      ),
 
-                      border: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
-                      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30),
+        borderSide: BorderSide.none,
+      ),
 
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
-                      ),
-
-                      // =================================================
-                      // FOKUS SEARCH BAR
-                      // =================================================
-
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(30),
-                        borderSide: const BorderSide(
-                          color: Color(0xFF493B32),
-                          width: 1.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 55),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30),
+        borderSide: const BorderSide(
+          color: Color(0xFF493B32),
+          width: 1.5,
+        ),
+      ),
+    ),
+  ),
+),
 
                 // =================================================
                 // GRID KATEGORI
                 // =================================================
 
-                _categoryGrid(),
-
-                const SizedBox(height: 45),
-
                 // =================================================
                 // SEMUA KATEGORI
                 // =================================================
 
-                ...categories.map(
-                  (category) =>
-                      _categorySection(category),
-                ),
+                FutureBuilder<List<RecipeModel>>(
+  future: recipesFuture,
+  builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (snapshot.hasError) {
+      return Center(
+        child: Text('Gagal mengambil data: ${snapshot.error}'),
+      );
+    }
+
+    final recipeList = snapshot.data ?? [];
+
+    if (recipeList.isEmpty) {
+      return const Center(
+        child: Text('Resep tidak ditemukan'),
+      );
+    }
+
+   final allRecipes = recipeList.map((recipe) {
+  return {
+    'id': recipe.id,
+    'name': recipe.title,
+    'image': recipe.imageUrl,
+    'category': recipe.category,
+    'rating': '4.5',
+    'description': 'Masakan ${recipe.category} dari ${recipe.area}.',
+    'area': recipe.area,
+    'ingredients': recipe.ingredients,
+    'tools': <String>[],
+    'steps': recipe.instructions
+        .split(RegExp(r'\r?\n+'))
+        .where((step) => step.trim().isNotEmpty)
+        .toList(),
+  };
+}).toList();
+
+    final apiCategories = allRecipes
+        .map((recipe) => recipe['category'].toString())
+        .toSet()
+        .toList();
+
+    return Column(
+      children: [
+        _categoryGrid(apiCategories),
+
+        ...apiCategories.map(
+          (category) => _categorySection(
+            category,
+            allRecipes,
+          ),
+        ),
+      ],
+    );
+  },
+),
 
                 const SizedBox(height: 60),
 
@@ -901,7 +957,7 @@ class _RecipePageState extends State<RecipePage>
   // GRID KATEGORI
   // =========================================================
 
-  Widget _categoryGrid() {
+  Widget _categoryGrid(List<String> categories) {
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 70,
@@ -972,9 +1028,12 @@ class _RecipePageState extends State<RecipePage>
   // KATEGORI
   // =========================================================
 
-  Widget _categorySection(String category) {
-    final categoryRecipes =
-        getRecipes(category);
+  Widget _categorySection(
+  String category,
+  List<Map<String, dynamic>> allRecipes,
+) {
+  final categoryRecipes =
+      getRecipes(category, allRecipes);
 
     if (categoryRecipes.isEmpty) {
       return const SizedBox.shrink();
@@ -1294,21 +1353,17 @@ ClipRRect(
   // =========================================================
 
   void _showRecipeDetail(
-      Map<String, dynamic> recipe) {
-    final detailRecipe = recipeData.firstWhere(
-      (item) => item['name'] == recipe['name'],
-      orElse: () => recipe,
-    );
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => RecipeDetailPage(
-          recipe: detailRecipe,
-        ),
+  Map<String, dynamic> recipe,
+) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => RecipeDetailPage(
+        recipe: recipe,
       ),
-    );
-  }
+    ),
+  );
+}
 
   // =========================================================
   // NAVBAR
