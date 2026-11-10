@@ -5,6 +5,8 @@ import 'profil_page.dart';
 import '../data/favorite_recipe_data.dart';
 import '../data/recipe_data.dart';
 import 'recipe_detail_page.dart';
+import '../widgets/search_bar_widget.dart';
+
 
 class RecipePage extends StatefulWidget {
   const RecipePage({super.key});
@@ -15,12 +17,20 @@ class RecipePage extends StatefulWidget {
 
 class _RecipePageState extends State<RecipePage>
     with SingleTickerProviderStateMixin {
+
   late AnimationController _backgroundController;
 
   final TextEditingController searchController =
       TextEditingController();
 
   String searchText = '';
+
+  // FUNGSI SEARCH DILETAKKAN DI SINI
+  void _handleSearch(String query) {
+    setState(() {
+      searchText = query.trim();
+    });
+  }
 
   @override
   void initState() {
@@ -751,91 +761,16 @@ class _RecipePageState extends State<RecipePage>
                 // =================================================
                 // SEARCH BAR
                 // =================================================
-
-                SizedBox(
-                  width: 470,
-                  child: TextField(
-                    controller: searchController,
-
-                    onChanged: (value) {
-                      setState(() {
-                        searchText = value.trim();
-                      });
-                    },
-
-                    decoration: InputDecoration(
-                      hintText: 'Cari resep...',
-
-                      hintStyle: const TextStyle(
-                        color: Color(0xFF9B8A7C),
-                      ),
-
-                      prefixIcon: const Icon(
-                        Icons.search,
-                        color: Color(0xFF79675B),
-                      ),
-
-                      suffixIcon: Container(
-                        margin: const EdgeInsets.all(5),
-                        decoration: const BoxDecoration(
-                          color: Color(0xFF493B32),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.search,
-                          color: Colors.white,
-                          size: 19,
-                        ),
-                      ),
-
-                      filled: true,
-
-                      fillColor:
-                          Colors.white.withValues(alpha: 0.94),
-
-                      contentPadding:
-                          const EdgeInsets.symmetric(
-                        vertical: 17,
-                        horizontal: 15,
-                      ),
-
-                      border: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
-                      ),
-
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
-                      ),
-
-                      // =================================================
-                      // FOKUS SEARCH BAR
-                      // =================================================
-
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(30),
-                        borderSide: const BorderSide(
-                          color: Color(0xFF493B32),
-                          width: 1.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                SearchBarWidget(onSearch: _handleSearch),
 
                 const SizedBox(height: 55),
 
                 // =================================================
                 // GRID KATEGORI
                 // =================================================
+                    _categoryGrid(),
 
-                _categoryGrid(),
-
-                const SizedBox(height: 45),
+                    const SizedBox(height: 45),
 
                 // =================================================
                 // SEMUA KATEGORI
@@ -848,6 +783,7 @@ class _RecipePageState extends State<RecipePage>
 
                 const SizedBox(height: 60),
 
+                
                 // =================================================
                 // FOOTER
                 // =================================================
