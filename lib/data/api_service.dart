@@ -9,11 +9,20 @@ class ApiService {
     ),
   );
 
-  final String _baseUrl = 'https://www.themealdb.com/api/json/v1/1/search.php?s=';
+  final String _baseUrl = 'https://www.themealdb.com/api/json/v1/1/search.php';
 
-  Future<List<RecipeModel>> fetchRecipes({String query = ''}) async {
+  Future<List<RecipeModel>> fetchRecipes({
+    String? search,
+    String firstLetter = 'a',
+  }) async {
     try {
-      final response = await _dio.get('$_baseUrl$query');
+      final searchQuery = search?.trim();
+      final response = await _dio.get(
+        _baseUrl,
+        queryParameters: searchQuery != null && searchQuery.isNotEmpty
+            ? {'s': searchQuery}
+            : {'f': firstLetter},
+      );
 
       if (response.statusCode == 200) {
         final data = response.data;
@@ -23,7 +32,9 @@ class ApiService {
         }
         return [];
       } else {
-        throw Exception('Gagal mengambil data dari server (${response.statusCode})');
+        throw Exception(
+          'Gagal mengambil data dari server (${response.statusCode})',
+        );
       }
     } on DioException catch (e) {
       throw Exception('Koneksi Dio Bermasalah: ${e.message}');

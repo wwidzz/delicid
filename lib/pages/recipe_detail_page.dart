@@ -1,21 +1,60 @@
-
 import 'package:flutter/material.dart';
 
 class RecipeDetailPage extends StatelessWidget {
   final Map<String, dynamic> recipe;
 
-  const RecipeDetailPage({
-    super.key,
-    required this.recipe,
-  });
+  const RecipeDetailPage({super.key, required this.recipe});
 
   @override
   Widget build(BuildContext context) {
     final List<dynamic> tools = recipe['tools'] ?? [];
-final List<dynamic> ingredients = recipe['ingredients'] ?? [];
-final List<dynamic> steps = recipe['steps'] ?? [];
+    final List<dynamic> ingredients = recipe['ingredients'] ?? [];
+    final List<dynamic> steps = recipe['steps'] ?? [];
+    final String imagePath = recipe['image']?.toString() ?? '';
 
-final String imagePath = recipe['image']?.toString() ?? '';
+    // MENGELOMPOKKAN INSTRUKSI RESEP
+    final List<String> formattedSteps = [];
+
+    final bool hasStepMarkers = steps.any((step) {
+      return RegExp(
+        r'^(?:step\s*)?\d+[\s.:)]*$',
+        caseSensitive: false,
+      ).hasMatch(step.toString().trim());
+    });
+
+    if (hasStepMarkers) {
+      String currentInstruction = '';
+
+      for (final step in steps) {
+        final line = step.toString().trim();
+
+        if (line.isEmpty) continue;
+
+        final isMarker = RegExp(
+          r'^(?:step\s*)?\d+[\s.:)]*$',
+          caseSensitive: false,
+        ).hasMatch(line);
+
+        if (isMarker) {
+          if (currentInstruction.isNotEmpty) {
+            formattedSteps.add(currentInstruction.trim());
+          }
+          currentInstruction = '';
+        } else {
+          currentInstruction += '${currentInstruction.isEmpty ? '' : ' '}$line';
+        }
+      }
+
+      if (currentInstruction.isNotEmpty) {
+        formattedSteps.add(currentInstruction.trim());
+      }
+    } else {
+      formattedSteps.addAll(
+        steps
+            .map((step) => step.toString().trim())
+            .where((step) => step.isNotEmpty),
+      );
+    }
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F3EA),
@@ -24,10 +63,7 @@ final String imagePath = recipe['image']?.toString() ?? '';
           children: [
             // NAVBAR
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 50,
-                vertical: 18,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 18),
               decoration: const BoxDecoration(
                 color: Colors.white,
                 boxShadow: [
@@ -98,10 +134,7 @@ final String imagePath = recipe['image']?.toString() ?? '';
 
             // INFORMASI RESEP
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 60,
-                vertical: 35,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 35),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -127,7 +160,7 @@ final String imagePath = recipe['image']?.toString() ?? '';
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        recipe['rating']?.toString() ?? '-',
+                        recipe['rating']?.toString() ?? '4.5',
                         style: const TextStyle(
                           fontSize: 18,
                           color: Color(0xFF66564C),
@@ -152,14 +185,9 @@ final String imagePath = recipe['image']?.toString() ?? '';
                   const SizedBox(height: 40),
 
                   // ALAT
-                  _sectionTitle(
-                    icon: Icons.kitchen_outlined,
-                    title: 'Alat',
-                  ),
+                  _sectionTitle(icon: Icons.kitchen_outlined, title: 'Alat'),
                   const SizedBox(height: 15),
-                  _whiteBox(
-                    child: _bulletList(tools),
-                  ),
+                  _whiteBox(child: _bulletList(tools)),
 
                   const SizedBox(height: 35),
 
@@ -169,9 +197,7 @@ final String imagePath = recipe['image']?.toString() ?? '';
                     title: 'Bahan',
                   ),
                   const SizedBox(height: 15),
-                  _whiteBox(
-                    child: _bulletList(ingredients),
-                  ),
+                  _whiteBox(child: _bulletList(ingredients)),
 
                   const SizedBox(height: 35),
 
@@ -181,52 +207,69 @@ final String imagePath = recipe['image']?.toString() ?? '';
                     title: 'Cara Membuat',
                   ),
                   const SizedBox(height: 15),
+
                   _whiteBox(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: List.generate(
-                        steps.length,
-                        (index) {
-                          return Padding(
-                            padding: const EdgeInsets.only(
-                              bottom: 18,
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 32,
-                                  height: 32,
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xFF493B32),
-                                    shape: BoxShape.circle,
+                      children: List.generate(formattedSteps.length, (index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 25),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // NOMOR LINGKARAN
+                              Container(
+                                width: 45,
+                                height: 45,
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFF493B32),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '${index + 1}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
                                   ),
-                                  child: Center(
-                                    child: Text(
-                                      '${index + 1}',
+                                ),
+                              ),
+
+                              const SizedBox(width: 20),
+
+                              // JUDUL DAN INSTRUKSI
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Langkah ${index + 1}',
                                       style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
+                                        fontSize: 17,
+                                        color: Color(0xFF66564C),
+                                        fontWeight: FontWeight.w500,
                                       ),
                                     ),
-                                  ),
-                                ),
-                                const SizedBox(width: 15),
-                                Expanded(
-                                  child: Text(
-                                    steps[index].toString(),
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      color: Color(0xFF66564C),
-                                      height: 1.5,
+
+                                    const SizedBox(height: 12),
+
+                                    Text(
+                                      formattedSteps[index],
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Color(0xFF66564C),
+                                        height: 1.6,
+                                      ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
                     ),
                   ),
 
@@ -262,9 +305,7 @@ final String imagePath = recipe['image']?.toString() ?? '';
                   SizedBox(height: 10),
                   Text(
                     '© 2026 DelicId',
-                    style: TextStyle(
-                      color: Colors.white60,
-                    ),
+                    style: TextStyle(color: Colors.white60),
                   ),
                 ],
               ),
@@ -282,11 +323,7 @@ final String imagePath = recipe['image']?.toString() ?? '';
       height: 350,
       color: const Color(0xFFEFD5B8),
       child: const Center(
-        child: Icon(
-          Icons.restaurant,
-          size: 80,
-          color: Color(0xFF493B32),
-        ),
+        child: Icon(Icons.restaurant, size: 80, color: Color(0xFF493B32)),
       ),
     );
   }
@@ -296,10 +333,7 @@ final String imagePath = recipe['image']?.toString() ?? '';
     if (items.isEmpty) {
       return const Text(
         'Belum ada data.',
-        style: TextStyle(
-          fontSize: 16,
-          color: Color(0xFF66564C),
-        ),
+        style: TextStyle(fontSize: 16, color: Color(0xFF66564C)),
       );
     }
 
@@ -313,10 +347,7 @@ final String imagePath = recipe['image']?.toString() ?? '';
             children: [
               const Text(
                 '• ',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Color(0xFF493B32),
-                ),
+                style: TextStyle(fontSize: 18, color: Color(0xFF493B32)),
               ),
               Expanded(
                 child: Text(
@@ -335,17 +366,10 @@ final String imagePath = recipe['image']?.toString() ?? '';
   }
 
   // JUDUL BAGIAN
-  Widget _sectionTitle({
-    required IconData icon,
-    required String title,
-  }) {
+  Widget _sectionTitle({required IconData icon, required String title}) {
     return Row(
       children: [
-        Icon(
-          icon,
-          color: const Color(0xFF493B32),
-          size: 28,
-        ),
+        Icon(icon, color: const Color(0xFF493B32), size: 28),
         const SizedBox(width: 10),
         Text(
           title,
@@ -360,9 +384,7 @@ final String imagePath = recipe['image']?.toString() ?? '';
   }
 
   // KOTAK PUTIH
-  Widget _whiteBox({
-    required Widget child,
-  }) {
+  Widget _whiteBox({required Widget child}) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(25),
@@ -371,7 +393,7 @@ final String imagePath = recipe['image']?.toString() ?? '';
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-           color: Colors.black.withValues(alpha: 0.06),
+            color: Colors.black.withOpacity(0.06),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
