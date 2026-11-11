@@ -20,14 +20,9 @@ class _RecipePageState extends State<RecipePage>
     with SingleTickerProviderStateMixin {
 
   late AnimationController _backgroundController;
-
   final ApiService apiService = ApiService();
-late Future<List<RecipeModel>> recipesFuture;
-late AnimationController _backgroundController;
-final TextEditingController searchController =
-    TextEditingController();
-
-String searchText = '';
+  late Future<List<RecipeModel>> recipesFuture;
+  final TextEditingController searchController = TextEditingController();
   String searchText = '';
 
   // FUNGSI SEARCH DILETAKKAN DI SINI
@@ -771,79 +766,6 @@ void initState() {
                 // =================================================
                 // SEARCH BAR
                 // =================================================
-
-                SizedBox(
-  width: 470,
-  child: TextField(
-    controller: searchController,
-
-    onChanged: (value) {
-      setState(() {
-        searchText = value.trim();
-      });
-    },
-
-    onSubmitted: (value) {
-      setState(() {
-        searchText = value.trim();
-        recipesFuture = apiService.fetchRecipes(
-          query: value.trim(),
-        );
-      });
-    },
-
-    decoration: InputDecoration(
-      hintText: 'Cari resep...',
-      hintStyle: const TextStyle(
-        color: Color(0xFF9B8A7C),
-      ),
-
-      prefixIcon: const Icon(
-        Icons.search,
-        color: Color(0xFF79675B),
-      ),
-
-      suffixIcon: Container(
-        margin: const EdgeInsets.all(5),
-        decoration: const BoxDecoration(
-          color: Color(0xFF493B32),
-          shape: BoxShape.circle,
-        ),
-        child: const Icon(
-          Icons.search,
-          color: Colors.white,
-          size: 19,
-        ),
-      ),
-
-      filled: true,
-      fillColor: Colors.white.withValues(alpha: 0.94),
-
-      contentPadding: const EdgeInsets.symmetric(
-        vertical: 17,
-        horizontal: 15,
-      ),
-
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(30),
-        borderSide: BorderSide.none,
-      ),
-
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(30),
-        borderSide: BorderSide.none,
-      ),
-
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(30),
-        borderSide: const BorderSide(
-          color: Color(0xFF493B32),
-          width: 1.5,
-        ),
-      ),
-    ),
-  ),
-),
                 SearchBarWidget(onSearch: _handleSearch),
 
                 const SizedBox(height: 55),
@@ -851,10 +773,7 @@ void initState() {
                 // =================================================
                 // GRID KATEGORI
                 // =================================================
-                    _categoryGrid(),
-
-                    const SizedBox(height: 45),
-
+                
                 // =================================================
                 // SEMUA KATEGORI
                 // =================================================
@@ -908,6 +827,8 @@ void initState() {
     return Column(
       children: [
         _categoryGrid(apiCategories),
+
+        const SizedBox(height: 35),
 
         ...apiCategories.map(
           (category) => _categorySection(
@@ -976,73 +897,77 @@ void initState() {
   // GRID KATEGORI
   // =========================================================
 
-  Widget _categoryGrid(List<String> categories) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 70,
+Widget _categoryGrid(List<String> categories) {
+  // 💡 BAHAN TAMBAHAN: Saring agar hanya mengambil kategori yang unik saja
+  final uniqueCategories = categories.toSet().toList();
+
+  return Padding(
+    padding: const EdgeInsets.symmetric(
+      horizontal: 70,
+    ),
+    child: GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      // 💡 Ubahcategories.length jadi uniqueCategories.length
+      itemCount: uniqueCategories.length, 
+      gridDelegate:
+          const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4,
+        crossAxisSpacing: 15,
+        mainAxisSpacing: 15,
+        childAspectRatio: 3.2,
       ),
-      child: GridView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: categories.length,
-        gridDelegate:
-            const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
-          crossAxisSpacing: 15,
-          mainAxisSpacing: 15,
-          childAspectRatio: 3.2,
-        ),
-        itemBuilder: (context, index) {
-          final category = categories[index];
+      itemBuilder: (context, index) {
+        // 💡 Ambil dari uniqueCategories
+        final category = uniqueCategories[index];
 
-          return Container(
-            decoration: BoxDecoration(
-              color:
-                  const Color(0xFFC09A8A)
-                      .withValues(alpha: 0.72),
-              borderRadius:
-                  BorderRadius.circular(15),
-              boxShadow: [
-                BoxShadow(
+        return Container(
+          decoration: BoxDecoration(
+            color:
+                const Color(0xFFC09A8A)
+                    .withValues(alpha: 0.72),
+            borderRadius:
+                BorderRadius.circular(15),
+            boxShadow: [
+              BoxShadow(
+                color:
+                    Colors.black.withValues(alpha: 0.10),
+                blurRadius: 8,
+                offset:
+                    const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment:
+                MainAxisAlignment.center,
+            children: [
+              Icon(
+                _categoryIcon(category),
+                color:
+                    const Color(0xFF493B32),
+                size: 25,
+              ),
+
+              const SizedBox(width: 8),
+
+              Text(
+                category,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight:
+                      FontWeight.bold,
                   color:
-                      Colors.black.withValues(alpha: 0.10),
-                  blurRadius: 8,
-                  offset:
-                      const Offset(0, 4),
+                      Color(0xFF493B32),
                 ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.center,
-              children: [
-                Icon(
-                  _categoryIcon(category),
-                  color:
-                      const Color(0xFF493B32),
-                  size: 25,
-                ),
-
-                const SizedBox(width: 8),
-
-                Text(
-                  category,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight:
-                        FontWeight.bold,
-                    color:
-                        Color(0xFF493B32),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-
+              ),
+            ],
+          ),
+        );
+      },
+    ),
+  );
+}
   // =========================================================
   // KATEGORI
   // =========================================================
