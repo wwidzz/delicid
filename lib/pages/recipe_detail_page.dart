@@ -56,6 +56,52 @@ class RecipeDetailPage extends StatelessWidget {
       );
     }
 
+// MENGELOMPOKKAN INSTRUKSI RESEP
+final List<String> formattedSteps = [];
+
+final bool hasStepMarkers = steps.any((step) {
+  return RegExp(
+    r'^(?:step\s*)?\d+[\s.:)]*$',
+    caseSensitive: false,
+  ).hasMatch(step.toString().trim());
+});
+
+if (hasStepMarkers) {
+  String currentInstruction = '';
+
+  for (final step in steps) {
+    final line = step.toString().trim();
+
+    if (line.isEmpty) continue;
+
+    final isMarker = RegExp(
+      r'^(?:step\s*)?\d+[\s.:)]*$',
+      caseSensitive: false,
+    ).hasMatch(line);
+
+    if (isMarker) {
+      if (currentInstruction.isNotEmpty) {
+        formattedSteps.add(currentInstruction.trim());
+      }
+
+      currentInstruction = '';
+    } else {
+      currentInstruction +=
+          '${currentInstruction.isEmpty ? '' : ' '}$line';
+    }
+  }
+
+  if (currentInstruction.isNotEmpty) {
+    formattedSteps.add(currentInstruction.trim());
+  }
+} else {
+  formattedSteps.addAll(
+    steps
+        .map((step) => step.toString().trim())
+        .where((step) => step.isNotEmpty),
+  );
+}
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F3EA),
       body: SingleChildScrollView(
@@ -211,6 +257,7 @@ class RecipeDetailPage extends StatelessWidget {
                   _whiteBox(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+<<<<<<< HEAD
                       children: List.generate(formattedSteps.length, (index) {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 25),
@@ -270,8 +317,72 @@ class RecipeDetailPage extends StatelessWidget {
                           ),
                         );
                       }),
+=======
+                      children: List.generate(
+                        formattedSteps.length,
+                        (index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 25),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+              // NOMOR LINGKARAN
+              Container(
+                width: 45,
+                height: 45,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF493B32),
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Text(
+                    '${index + 1}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+>>>>>>> a6e4c986803113367ec5a1a20dcbd32255a02fbb
                     ),
                   ),
+                ),
+              ),
+
+              const SizedBox(width: 20),
+
+              // JUDUL DAN INSTRUKSI
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'step ${index + 1}',
+                      style: const TextStyle(
+                        fontSize: 17,
+                        color: Color(0xFF66564C),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    Text(
+                      formattedSteps[index],
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Color(0xFF66564C),
+                        height: 1.6,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    ),
+  ),
+),
 
                   const SizedBox(height: 50),
                 ],

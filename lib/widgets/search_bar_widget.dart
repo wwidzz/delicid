@@ -19,7 +19,7 @@ class SearchBarWidget extends StatelessWidget {
         border: Border.all(color: const Color(0xFFE3D4C5)),
       ),
       child: TextField(
-        onSubmitted: _onSearch,
+        onChanged: _onSearch,
         decoration: InputDecoration(
           hintText: 'Cari resep masakan favoritmu...',
           hintStyle: const TextStyle(

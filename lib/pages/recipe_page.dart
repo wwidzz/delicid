@@ -9,6 +9,7 @@ import 'profil_page.dart';
 import '../data/favorite_recipe_data.dart';
 import 'recipe_detail_page.dart';
 import '../widgets/search_bar_widget.dart';
+import '../data/recipe_cover.dart';
 
 class RecipePage extends StatefulWidget {
   const RecipePage({super.key});
@@ -22,16 +23,16 @@ class _RecipePageState extends State<RecipePage>
   late AnimationController _backgroundController;
   final ApiService apiService = ApiService();
   late Future<List<RecipeModel>> recipesFuture;
-  String searchText = '';
 
-  // FUNGSI SEARCH DILETAKKAN DI SINI
+  final TextEditingController searchController = TextEditingController();
+
+  String searchText = '';
+  String? selectedCategory;
+
+  // FUNGSI SEARCH
   void _handleSearch(String query) {
-    final trimmedQuery = query.trim();
     setState(() {
-      searchText = trimmedQuery;
-      recipesFuture = apiService.fetchRecipes(
-        search: trimmedQuery.isEmpty ? null : trimmedQuery,
-      );
+      recipesFuture = apiService.fetchRecipes(query: query.trim());
     });
   }
 
@@ -50,11 +51,29 @@ class _RecipePageState extends State<RecipePage>
   @override
   void dispose() {
     _backgroundController.dispose();
+    searchController.dispose();
     super.dispose();
   }
   // =========================================================
+  // DATA RESEP
+  // =========================================================
+
+  final List<Map<String, dynamic>> recipes = RecipeCover.recipes;
+
+  // =========================================================
   // KATEGORI
   // =========================================================
+
+  final List<String> categories = [
+    'Olahan Daging',
+    'Olahan Ikan',
+    'Olahan Ayam',
+    'Olahan Mie',
+    'Dessert',
+    'Roti',
+    'Minuman',
+    'Lainnya',
+  ];
 
   // =========================================================
   // FILTER RESEP
@@ -65,14 +84,7 @@ class _RecipePageState extends State<RecipePage>
     List<Map<String, dynamic>> allRecipes,
   ) {
     return allRecipes.where((recipe) {
-      final bool sameCategory = recipe['category'] == category;
-
-      final String name = recipe['name'].toString().toLowerCase();
-
-      final bool matchesSearch =
-          searchText.isEmpty || name.contains(searchText.toLowerCase());
-
-      return sameCategory && matchesSearch;
+      return recipe['category'] == category;
     }).toList();
   }
 
@@ -222,10 +234,6 @@ class _RecipePageState extends State<RecipePage>
                 const SizedBox(height: 55),
 
                 // =================================================
-                // GRID KATEGORI
-                // =================================================
-
-                // =================================================
                 // SEMUA KATEGORI
                 // =================================================
                 FutureBuilder<List<RecipeModel>>(
@@ -263,14 +271,6 @@ class _RecipePageState extends State<RecipePage>
                             .split(RegExp(r'\r?\n+'))
                             .where((step) => step.trim().isNotEmpty)
                             .toList(),
-                        'alternateDrink': recipe.alternateDrink,
-                        'tags': recipe.tags,
-                        'videoUrl': recipe.videoUrl,
-                        'sourceUrl': recipe.sourceUrl,
-                        'imageSourceUrl': recipe.imageSourceUrl,
-                        'creativeCommonsConfirmed':
-                            recipe.creativeCommonsConfirmed,
-                        'dateModified': recipe.dateModified,
                       };
                     }).toList();
 
@@ -285,9 +285,15 @@ class _RecipePageState extends State<RecipePage>
 
                         const SizedBox(height: 35),
 
-                        ...apiCategories.map(
-                          (category) => _categorySection(category, allRecipes),
-                        ),
+                        ...(selectedCategory == null
+                                ? apiCategories
+                                : apiCategories.where(
+                                    (category) => category == selectedCategory,
+                                  ))
+                            .map(
+                              (category) =>
+                                  _categorySection(category, allRecipes),
+                            ),
                       ],
                     );
                   },
@@ -346,7 +352,6 @@ class _RecipePageState extends State<RecipePage>
   // =========================================================
 
   Widget _categoryGrid(List<String> categories) {
-    // 💡 BAHAN TAMBAHAN: Saring agar hanya mengambil kategori yang unik saja
     final uniqueCategories = categories.toSet().toList();
 
     return Padding(
@@ -354,7 +359,6 @@ class _RecipePageState extends State<RecipePage>
       child: GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        // 💡 Ubahcategories.length jadi uniqueCategories.length
         itemCount: uniqueCategories.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
@@ -363,47 +367,55 @@ class _RecipePageState extends State<RecipePage>
           childAspectRatio: 3.2,
         ),
         itemBuilder: (context, index) {
-          // 💡 Ambil dari uniqueCategories
           final category = uniqueCategories[index];
 
-          return Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFFC09A8A).withValues(alpha: 0.72),
-              borderRadius: BorderRadius.circular(15),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.10),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  _categoryIcon(category),
-                  color: const Color(0xFF493B32),
-                  size: 25,
-                ),
-
-                const SizedBox(width: 8),
-
-                Text(
-                  category,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF493B32),
+          return InkWell(
+            onTap: () {
+              setState(() {
+                selectedCategory = selectedCategory == category
+                    ? null
+                    : category;
+              });
+            },
+            borderRadius: BorderRadius.circular(15),
+            child: Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFFC09A8A).withValues(alpha: 0.72),
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.10),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
                   ),
-                ),
-              ],
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    _categoryIcon(category),
+                    color: const Color(0xFF493B32),
+                    size: 25,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    category,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF493B32),
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },
       ),
     );
   }
+
   // =========================================================
   // KATEGORI
   // =========================================================
@@ -696,10 +708,7 @@ class _RecipePageState extends State<RecipePage>
   void _showRecipeDetail(Map<String, dynamic> recipe) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) =>
-            RecipeDetailPage(recipe: RecipeModel.fromJson(recipe)),
-      ),
+      MaterialPageRoute(builder: (context) => RecipeDetailPage(recipe: recipe)),
     );
   }
 
