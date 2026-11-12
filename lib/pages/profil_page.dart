@@ -1,7 +1,4 @@
-import '../data/recipe_model.dart';
-
 import 'package:flutter/material.dart';
-
 import 'about_us_page.dart';
 import 'recipe_page.dart';
 import 'cooking_class_page.dart';
@@ -12,7 +9,10 @@ import '../data/recipe_data.dart';
 class ProfilePage extends StatelessWidget {
   final String username;
 
-  const ProfilePage({super.key, this.username = 'Nama Akun'});
+  const ProfilePage({
+    super.key,
+    this.username = 'Nama Akun',
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,10 @@ class ProfilePage extends StatelessWidget {
             // =====================================================
 
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 18),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 50,
+                vertical: 18,
+              ),
               decoration: const BoxDecoration(
                 color: Colors.white,
                 boxShadow: [
@@ -50,22 +53,45 @@ class ProfilePage extends StatelessWidget {
 
                   const Spacer(),
 
-                  _navItem(context, 'Home', false),
+                  _navItem(
+                    context,
+                    'Home',
+                    false,
+                  ),
 
-                  _navItem(context, 'About Us', false),
+                  _navItem(
+                    context,
+                    'About Us',
+                    false,
+                  ),
 
-                  _navItem(context, 'Recipe', false),
+                  _navItem(
+                    context,
+                    'Recipe',
+                    false,
+                  ),
 
-                  _navItem(context, 'Cooking Class', false),
+                  _navItem(
+                    context,
+                    'Cooking Class',
+                    false,
+                  ),
 
-                  _navItem(context, 'Profil', true),
+                  _navItem(
+                    context,
+                    'Profil',
+                    true,
+                  ),
 
                   const SizedBox(width: 15),
 
                   IconButton(
                     tooltip: 'Logout',
                     onPressed: () {
-                      Navigator.popUntil(context, (route) => route.isFirst);
+                      Navigator.popUntil(
+                        context,
+                        (route) => route.isFirst,
+                      );
                     },
                     icon: const Icon(
                       Icons.power_settings_new,
@@ -79,6 +105,7 @@ class ProfilePage extends StatelessWidget {
             // =====================================================
             // JUDUL PROFIL
             // =====================================================
+
             const SizedBox(height: 45),
 
             const Text(
@@ -95,6 +122,7 @@ class ProfilePage extends StatelessWidget {
             // =====================================================
             // FOTO PROFIL
             // =====================================================
+
             Stack(
               clipBehavior: Clip.none,
               children: [
@@ -121,6 +149,7 @@ class ProfilePage extends StatelessWidget {
                 // =================================================
                 // TOMBOL EDIT FOTO
                 // =================================================
+
                 Positioned(
                   right: -2,
                   bottom: 2,
@@ -134,7 +163,8 @@ class ProfilePage extends StatelessWidget {
                     child: IconButton(
                       tooltip: 'Edit Foto',
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(
                           const SnackBar(
                             content: Text(
                               'Fitur mengganti foto akan dibuat selanjutnya.',
@@ -158,6 +188,7 @@ class ProfilePage extends StatelessWidget {
             // =====================================================
             // NAMA AKUN
             // =====================================================
+
             Text(
               username,
               style: const TextStyle(
@@ -172,6 +203,7 @@ class ProfilePage extends StatelessWidget {
             // =====================================================
             // MENU PROFIL
             // =====================================================
+
             _profileMenu(
               context,
               icon: Icons.favorite_border,
@@ -224,6 +256,7 @@ class ProfilePage extends StatelessWidget {
             // =====================================================
             // FOOTER
             // =====================================================
+
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(35),
@@ -254,7 +287,9 @@ class ProfilePage extends StatelessWidget {
 
                   Text(
                     '© 2026 DelicId',
-                    style: TextStyle(color: Colors.white60),
+                    style: TextStyle(
+                      color: Colors.white60,
+                    ),
                   ),
                 ],
               ),
@@ -265,6 +300,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
+  
   // =========================================================
   // MENAMPILKAN RESEP YANG DISUKAI DAN DISIMPAN
   // =========================================================
@@ -291,14 +327,18 @@ class ProfilePage extends StatelessWidget {
               foregroundColor: const Color(0xFF493B32),
               elevation: 0,
             ),
-            body: ValueListenableBuilder<List<Map<String, dynamic>>>(
+            body: ValueListenableBuilder<
+                List<Map<String, dynamic>>>(
               valueListenable: recipes,
               builder: (context, recipeList, child) {
                 if (recipeList.isEmpty) {
                   return const Center(
                     child: Text(
                       'Belum ada resep.',
-                      style: TextStyle(fontSize: 16, color: Color(0xFF493B32)),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Color(0xFF493B32),
+                      ),
                     ),
                   );
                 }
@@ -319,13 +359,17 @@ class ProfilePage extends StatelessWidget {
                     );
 
                     // Ambil gambar dari data resep lengkap.
-                    final imagePath =
-                        (detailRecipe['image'] ?? recipe['image'] ?? '')
-                            .toString();
+                    final imagePath = (
+                      detailRecipe['image'] ??
+                      recipe['image'] ??
+                      ''
+                    ).toString();
 
                     return Container(
                       height: 116,
-                      margin: const EdgeInsets.only(bottom: 12),
+                      margin: const EdgeInsets.only(
+                        bottom: 12,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(14),
@@ -350,12 +394,17 @@ class ProfilePage extends StatelessWidget {
                                 child: imagePath.isEmpty
                                     ? _emptyRecipeImage()
                                     : Image(
-                                        image: _recipeImageProvider(imagePath),
+                                        image: _recipeImageProvider(
+                                          imagePath,
+                                        ),
                                         fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                              return _emptyRecipeImage();
-                                            },
+                                        errorBuilder: (
+                                          context,
+                                          error,
+                                          stackTrace,
+                                        ) {
+                                          return _emptyRecipeImage();
+                                        },
                                       ),
                               ),
                             ),
@@ -369,11 +418,14 @@ class ProfilePage extends StatelessWidget {
                                 vertical: 9,
                               ),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    recipe['name']?.toString() ?? 'Resep',
+                                    recipe['name']?.toString() ??
+                                        'Resep',
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(
@@ -395,10 +447,11 @@ class ProfilePage extends StatelessWidget {
                                       ),
                                       const SizedBox(width: 4),
                                       Text(
-                                        (detailRecipe['rating'] ??
-                                                recipe['rating'] ??
-                                                '-')
-                                            .toString(),
+                                        (
+                                          detailRecipe['rating'] ??
+                                          recipe['rating'] ??
+                                          '-'
+                                        ).toString(),
                                         style: const TextStyle(
                                           fontSize: 12,
                                           color: Color(0xFF493B32),
@@ -419,34 +472,34 @@ class ProfilePage extends StatelessWidget {
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 RecipeDetailPage(
-                                                  recipe: RecipeModel.fromJson(
-                                                    detailRecipe,
-                                                  ),
-                                                ),
+                                              recipe: detailRecipe,
+                                            ),
                                           ),
                                         );
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(
-                                          0xFF493B32,
-                                        ),
+                                        backgroundColor:
+                                            const Color(0xFF493B32),
                                         foregroundColor: Colors.white,
                                         elevation: 0,
-                                        padding: const EdgeInsets.symmetric(
+                                        padding:
+                                            const EdgeInsets.symmetric(
                                           horizontal: 15,
                                         ),
                                         minimumSize: Size.zero,
                                         tapTargetSize:
-                                            MaterialTapTargetSize.shrinkWrap,
+                                            MaterialTapTargetSize
+                                                .shrinkWrap,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            20,
-                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(20),
                                         ),
                                       ),
                                       child: const Text(
                                         'Lihat',
-                                        style: TextStyle(fontSize: 11),
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -474,13 +527,18 @@ class ProfilePage extends StatelessWidget {
     return Container(
       color: const Color(0xFFEFD5B8),
       alignment: Alignment.center,
-      child: const Icon(Icons.restaurant, size: 32, color: Color(0xFF493B32)),
+      child: const Icon(
+        Icons.restaurant,
+        size: 32,
+        color: Color(0xFF493B32),
+      ),
     );
   }
 
   // Memilih gambar dari URL atau asset lokal.
   ImageProvider _recipeImageProvider(String path) {
-    if (path.startsWith('http://') || path.startsWith('https://')) {
+    if (path.startsWith('http://') ||
+        path.startsWith('https://')) {
       return NetworkImage(path);
     }
 
@@ -498,13 +556,18 @@ class ProfilePage extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 150),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 150,
+      ),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(15),
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 22),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 25,
+            vertical: 22,
+          ),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(15),
@@ -525,7 +588,11 @@ class ProfilePage extends StatelessWidget {
                   color: const Color(0xFFE8D9CC),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(icon, size: 26, color: const Color(0xFF493B32)),
+                child: Icon(
+                  icon,
+                  size: 26,
+                  color: const Color(0xFF493B32),
+                ),
               ),
 
               const SizedBox(width: 18),
@@ -549,9 +616,15 @@ class ProfilePage extends StatelessWidget {
   // NAVBAR
   // =========================================================
 
-  Widget _navItem(BuildContext context, String title, bool active) {
+  Widget _navItem(
+    BuildContext context,
+    String title,
+    bool active,
+  ) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -559,44 +632,72 @@ class ProfilePage extends StatelessWidget {
             onPressed: () {
               // HOME
               if (title == 'Home') {
-                Navigator.popUntil(context, (route) => route.isFirst);
+                Navigator.popUntil(
+                  context,
+                  (route) => route.isFirst,
+                );
               }
+
               // ABOUT US
               else if (title == 'About Us') {
                 Navigator.push(
                   context,
                   PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                        const AboutUsPage(),
-                    transitionDuration: Duration.zero,
-                    reverseTransitionDuration: Duration.zero,
+                    pageBuilder:
+                        (
+                          context,
+                          animation,
+                          secondaryAnimation,
+                        ) =>
+                            const AboutUsPage(),
+                    transitionDuration:
+                        Duration.zero,
+                    reverseTransitionDuration:
+                        Duration.zero,
                   ),
                 );
               }
+
               // RECIPE
               else if (title == 'Recipe') {
                 Navigator.push(
                   context,
                   PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                        const RecipePage(),
-                    transitionDuration: Duration.zero,
-                    reverseTransitionDuration: Duration.zero,
+                    pageBuilder:
+                        (
+                          context,
+                          animation,
+                          secondaryAnimation,
+                        ) =>
+                            const RecipePage(),
+                    transitionDuration:
+                        Duration.zero,
+                    reverseTransitionDuration:
+                        Duration.zero,
                   ),
                 );
               }
+
               // COOKING CLASS
               else if (title == 'Cooking Class') {
                 Navigator.push(
                   context,
                   PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                        const CookingClassPage(),
-                    transitionDuration: Duration.zero,
-                    reverseTransitionDuration: Duration.zero,
+                    pageBuilder:
+                        (
+                          context,
+                          animation,
+                          secondaryAnimation,
+                        ) =>
+                            const CookingClassPage(),
+                    transitionDuration:
+                        Duration.zero,
+                    reverseTransitionDuration:
+                        Duration.zero,
                   ),
                 );
               }
+
               // PROFIL
               else if (title == 'Profil') {
                 // Sudah berada di halaman Profil.
@@ -606,13 +707,19 @@ class ProfilePage extends StatelessWidget {
               title,
               style: TextStyle(
                 color: const Color(0xFF493B32),
-                fontWeight: active ? FontWeight.bold : FontWeight.w600,
+                fontWeight: active
+                    ? FontWeight.bold
+                    : FontWeight.w600,
               ),
             ),
           ),
 
           if (active)
-            Container(width: 50, height: 2, color: const Color(0xFF493B32)),
+            Container(
+              width: 50,
+              height: 2,
+              color: const Color(0xFF493B32),
+            ),
         ],
       ),
     );
