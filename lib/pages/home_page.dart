@@ -1,4 +1,6 @@
+
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'about_us_page.dart';
 import 'recipe_page.dart';
 import 'profil_page.dart';
@@ -6,6 +8,13 @@ import 'cooking_class_page.dart';
 
 class HomePage extends StatelessWidget {
   final String username;
+
+  static const List<String> bannerImages = [
+    'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=900',
+    'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=900',
+    'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=900',
+    'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=900',
+  ];
 
   const HomePage({
     super.key,
@@ -19,9 +28,7 @@ class HomePage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // =====================================================
             // NAVBAR
-            // =====================================================
             Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: 50,
@@ -39,7 +46,6 @@ class HomePage extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  // LOGO
                   const Text(
                     'DelicId',
                     style: TextStyle(
@@ -48,47 +54,13 @@ class HomePage extends StatelessWidget {
                       color: Color(0xFF493B32),
                     ),
                   ),
-
                   const Spacer(),
-
-                  // MENU HOME
-                  _navItem(
-                    context,
-                    'Home',
-                    true,
-                  ),
-
-                  // MENU ABOUT US
-                  _navItem(
-                    context,
-                    'About Us',
-                    false,
-                  ),
-
-                  // MENU RECIPE
-                  _navItem(
-                    context,
-                    'Recipe',
-                    false,
-                  ),
-
-                  // MENU COOKING CLASS
-                  _navItem(
-                    context,
-                    'Cooking Class',
-                    false,
-                  ),
-
-                  // MENU PROFIL
-                  _navItem(
-                    context,
-                    'Profil',
-                    false,
-                  ),
-
+                  _navItem(context, 'Home', true),
+                  _navItem(context, 'About Us', false),
+                  _navItem(context, 'Recipe', false),
+                  _navItem(context, 'Cooking Class', false),
+                  _navItem(context, 'Profil', false),
                   const SizedBox(width: 15),
-
-                  // LOGOUT
                   IconButton(
                     tooltip: 'Logout',
                     onPressed: () {
@@ -103,9 +75,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
 
-            // =====================================================
             // WELCOME
-            // =====================================================
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(
@@ -114,11 +84,9 @@ class HomePage extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  // BAGIAN KIRI
                   Expanded(
                     child: Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           'Selamat datang, $username!',
@@ -128,9 +96,7 @@ class HomePage extends StatelessWidget {
                             color: Color(0xFF493B32),
                           ),
                         ),
-
                         const SizedBox(height: 15),
-
                         const Text(
                           'Temukan resep lezat dan inspirasi '
                           'memasak untuk setiap momen.',
@@ -140,41 +106,31 @@ class HomePage extends StatelessWidget {
                             height: 1.5,
                           ),
                         ),
-
                         const SizedBox(height: 25),
-
                         ElevatedButton(
                           onPressed: () {
                             Navigator.push(
                               context,
                               PageRouteBuilder(
-                                pageBuilder:
-                                    (
-                                      context,
-                                      animation,
-                                      secondaryAnimation,
-                                    ) =>
-                                        const RecipePage(),
-                                transitionDuration:
-                                    Duration.zero,
-                                reverseTransitionDuration:
-                                    Duration.zero,
+                                pageBuilder: (
+                                  context,
+                                  animation,
+                                  secondaryAnimation,
+                                ) => const RecipePage(),
+                                transitionDuration: Duration.zero,
+                                reverseTransitionDuration: Duration.zero,
                               ),
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                const Color(0xFF493B32),
+                            backgroundColor: const Color(0xFF493B32),
                             foregroundColor: Colors.white,
-                            padding:
-                                const EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                               horizontal: 30,
                               vertical: 16,
                             ),
-                            shape:
-                                RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                           child: const Text(
@@ -190,28 +146,38 @@ class HomePage extends StatelessWidget {
 
                   const SizedBox(width: 40),
 
-                  // BAGIAN KANAN - GAMBAR
+                  // CAROUSEL BANNER
                   Expanded(
-                    child: ClipRRect(
-                      borderRadius:
-                          BorderRadius.circular(25),
-                      child: Image.network(
-                        'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=900',
+                    child: CarouselSlider(
+                      options: CarouselOptions(
                         height: 320,
-                        fit: BoxFit.cover,
-                        errorBuilder:
-                            (context, error, stackTrace) {
-                          return Container(
-                            height: 320,
-                            color: const Color(0xFFEFD5B8),
-                            child: const Icon(
-                              Icons.restaurant,
-                              size: 80,
-                              color: Color(0xFF493B32),
-                            ),
-                          );
-                        },
+                        autoPlay: true,
+                        autoPlayInterval: const Duration(seconds: 3),
+                        autoPlayAnimationDuration:
+                            const Duration(milliseconds: 800),
+                        enlargeCenterPage: true,
+                        viewportFraction: 0.9,
                       ),
+                      items: bannerImages.map((img) {
+                        return ClipRRect(
+                          borderRadius: BorderRadius.circular(25),
+                          child: Image.network(
+                            img,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: const Color(0xFFEFD5B8),
+                                child: const Icon(
+                                  Icons.restaurant,
+                                  size: 80,
+                                  color: Color(0xFF493B32),
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      }).toList(),
                     ),
                   ),
                 ],
@@ -220,9 +186,7 @@ class HomePage extends StatelessWidget {
 
             const SizedBox(height: 70),
 
-            // =====================================================
             // FOOTER
-            // =====================================================
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(30),
@@ -237,9 +201,7 @@ class HomePage extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
-
                   SizedBox(height: 10),
-
                   Text(
                     'Cooking & Bakery',
                     style: TextStyle(
@@ -248,9 +210,7 @@ class HomePage extends StatelessWidget {
                       color: Colors.white70,
                     ),
                   ),
-
                   SizedBox(height: 10),
-
                   Text(
                     '© 2026 DelicId',
                     style: TextStyle(
@@ -266,108 +226,75 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // ============================================================
   // NAVBAR ITEM
-  // ============================================================
-
   Widget _navItem(
     BuildContext context,
     String title,
     bool isActive,
   ) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           TextButton(
             onPressed: () {
-              
-              // =========================
-              // ABOUT US
-              // =========================
               if (title == 'About Us') {
                 Navigator.push(
                   context,
                   PageRouteBuilder(
-                    pageBuilder:
-                        (
-                          context,
-                          animation,
-                          secondaryAnimation,
-                        ) =>
-                            const AboutUsPage(),
+                    pageBuilder: (
+                      context,
+                      animation,
+                      secondaryAnimation,
+                    ) => const AboutUsPage(),
                     transitionDuration: Duration.zero,
-                    reverseTransitionDuration:
-                        Duration.zero,
+                    reverseTransitionDuration: Duration.zero,
                   ),
                 );
               }
 
-              // =========================
-              // RECIPE
-              // =========================
               if (title == 'Recipe') {
                 Navigator.push(
                   context,
                   PageRouteBuilder(
-                    pageBuilder:
-                        (
-                          context,
-                          animation,
-                          secondaryAnimation,
-                        ) =>
-                            const RecipePage(),
+                    pageBuilder: (
+                      context,
+                      animation,
+                      secondaryAnimation,
+                    ) => const RecipePage(),
                     transitionDuration: Duration.zero,
-                    reverseTransitionDuration:
-                        Duration.zero,
+                    reverseTransitionDuration: Duration.zero,
                   ),
                 );
               }
 
-              // =========================
-              // COOKING CLASS
-              // =========================
               if (title == 'Cooking Class') {
                 Navigator.push(
                   context,
                   PageRouteBuilder(
-                    pageBuilder:
-                        (
-                          context,
-                          animation,
-                          secondaryAnimation,
-                        ) =>
-                            const CookingClassPage(),
+                    pageBuilder: (
+                      context,
+                      animation,
+                      secondaryAnimation,
+                    ) => const CookingClassPage(),
                     transitionDuration: Duration.zero,
-                    reverseTransitionDuration:
-                        Duration.zero,
+                    reverseTransitionDuration: Duration.zero,
                   ),
                 );
               }
 
-              // =========================
-              // PROFIL
-              // =========================
               if (title == 'Profil') {
                 Navigator.push(
                   context,
                   PageRouteBuilder(
-                    pageBuilder:
-                        (
-                          context,
-                          animation,
-                          secondaryAnimation,
-                        ) =>
-                            ProfilePage(
-                      username: username,
-                    ),
-                    transitionDuration:
-                        Duration.zero,
-                    reverseTransitionDuration:
-                        Duration.zero,
+                    pageBuilder: (
+                      context,
+                      animation,
+                      secondaryAnimation,
+                    ) => ProfilePage(username: username),
+                    transitionDuration: Duration.zero,
+                    reverseTransitionDuration: Duration.zero,
                   ),
                 );
               }
@@ -382,8 +309,6 @@ class HomePage extends StatelessWidget {
               ),
             ),
           ),
-
-          // GARIS MENU AKTIF
           if (isActive)
             Container(
               width: 50,
@@ -395,10 +320,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // ============================================================
   // COOKING CLASS CARD
-  // ============================================================
-
   Widget classCard(
     String title,
     String description,
@@ -417,9 +339,7 @@ class HomePage extends StatelessWidget {
             size: 50,
             color: const Color(0xFF493B32),
           ),
-
           const SizedBox(height: 15),
-
           Text(
             title,
             style: const TextStyle(
@@ -428,9 +348,7 @@ class HomePage extends StatelessWidget {
               color: Color(0xFF493B32),
             ),
           ),
-
           const SizedBox(height: 8),
-
           Text(
             description,
             textAlign: TextAlign.center,
