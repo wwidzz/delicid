@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class RecipeDetailPage extends StatelessWidget {
@@ -12,56 +11,54 @@ class RecipeDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<dynamic> tools = recipe['tools'] ?? [];
-final List<dynamic> ingredients = recipe['ingredients'] ?? [];
-final List<dynamic> steps = recipe['steps'] ?? [];
+    final List<dynamic> ingredients = recipe['ingredients'] ?? [];
+    final List<dynamic> steps = recipe['steps'] ?? [];
+    final String imagePath = recipe['image']?.toString() ?? '';
 
-final String imagePath = recipe['image']?.toString() ?? '';
+    // MENGELOMPOKKAN INSTRUKSI RESEP
+    final List<String> formattedSteps = [];
 
-// MENGELOMPOKKAN INSTRUKSI RESEP
-final List<String> formattedSteps = [];
+    final bool hasStepMarkers = steps.any((step) {
+      return RegExp(
+        r'^(?:step\s*)?\d+[\s.:)]*$',
+        caseSensitive: false,
+      ).hasMatch(step.toString().trim());
+    });
 
-final bool hasStepMarkers = steps.any((step) {
-  return RegExp(
-    r'^(?:step\s*)?\d+[\s.:)]*$',
-    caseSensitive: false,
-  ).hasMatch(step.toString().trim());
-});
+    if (hasStepMarkers) {
+      String currentInstruction = '';
 
-if (hasStepMarkers) {
-  String currentInstruction = '';
+      for (final step in steps) {
+        final line = step.toString().trim();
 
-  for (final step in steps) {
-    final line = step.toString().trim();
+        if (line.isEmpty) continue;
 
-    if (line.isEmpty) continue;
+        final isMarker = RegExp(
+          r'^(?:step\s*)?\d+[\s.:)]*$',
+          caseSensitive: false,
+        ).hasMatch(line);
 
-    final isMarker = RegExp(
-      r'^(?:step\s*)?\d+[\s.:)]*$',
-      caseSensitive: false,
-    ).hasMatch(line);
+        if (isMarker) {
+          if (currentInstruction.isNotEmpty) {
+            formattedSteps.add(currentInstruction.trim());
+          }
+          currentInstruction = '';
+        } else {
+          currentInstruction +=
+              '${currentInstruction.isEmpty ? '' : ' '}$line';
+        }
+      }
 
-    if (isMarker) {
       if (currentInstruction.isNotEmpty) {
         formattedSteps.add(currentInstruction.trim());
       }
-
-      currentInstruction = '';
     } else {
-      currentInstruction +=
-          '${currentInstruction.isEmpty ? '' : ' '}$line';
+      formattedSteps.addAll(
+        steps
+            .map((step) => step.toString().trim())
+            .where((step) => step.isNotEmpty),
+      );
     }
-  }
-
-  if (currentInstruction.isNotEmpty) {
-    formattedSteps.add(currentInstruction.trim());
-  }
-} else {
-  formattedSteps.addAll(
-    steps
-        .map((step) => step.toString().trim())
-        .where((step) => step.isNotEmpty),
-  );
-}
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F3EA),
@@ -173,7 +170,7 @@ if (hasStepMarkers) {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        recipe['rating']?.toString() ?? '-',
+                        recipe['rating']?.toString() ?? '4.5',
                         style: const TextStyle(
                           fontSize: 18,
                           color: Color(0xFF66564C),
@@ -239,62 +236,63 @@ if (hasStepMarkers) {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-              // NOMOR LINGKARAN
-              Container(
-                width: 45,
-                height: 45,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF493B32),
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Text(
-                    '${index + 1}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                                // NOMOR LINGKARAN
+                                Container(
+                                  width: 45,
+                                  height: 45,
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xFF493B32),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      '${index + 1}',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                const SizedBox(width: 20),
+
+                                // JUDUL DAN INSTRUKSI
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Langkah ${index + 1}',
+                                        style: const TextStyle(
+                                          fontSize: 17,
+                                          color: Color(0xFF66564C),
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+
+                                      const SizedBox(height: 12),
+
+                                      Text(
+                                        formattedSteps[index],
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Color(0xFF66564C),
+                                          height: 1.6,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-              ),
-
-              const SizedBox(width: 20),
-
-              // JUDUL DAN INSTRUKSI
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'step ${index + 1}',
-                      style: const TextStyle(
-                        fontSize: 17,
-                        color: Color(0xFF66564C),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    Text(
-                      formattedSteps[index],
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Color(0xFF66564C),
-                        height: 1.6,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    ),
-  ),
-),
 
                   const SizedBox(height: 50),
                 ],
@@ -437,7 +435,7 @@ if (hasStepMarkers) {
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-           color: Colors.black.withValues(alpha: 0.06),
+            color: Colors.black.withOpacity(0.06),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
