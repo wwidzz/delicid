@@ -33,7 +33,7 @@ class _RecipePageState extends State<RecipePage>
   // FUNGSI SEARCH
     void _handleSearch(String query) {
       setState(() {
-        recipesFuture = apiService.fetchRecipes(query: query.trim());
+        recipesFuture = apiService.fetchRecipes(search: query.trim());
       });
     }
 
