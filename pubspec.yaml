@@ -14,6 +14,14 @@ dependencies:
   cupertino_icons: ^1.0.8
   dio: ^5.11.1
 
+  shimmer: ^3.0.0                  # Tugas Dev 1
+  cached_network_image: ^3.3.1     # Tugas Dev 1
+  carousel_slider: ^5.0.0          # Tugas Dev 2
+  shared_preferences: ^2.2.3       # Tugas Dev 3
+  flutter_rating_bar: ^4.0.1       # Tugas Dev 4
+  share_plus: ^10.0.0              # Tugas Dev 4
+  awesome_snackbar_content: ^0.1.3 # Tugas Dev 5
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
