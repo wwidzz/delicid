@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+
+import '../widgets/custom_alert.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -8,14 +11,11 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final TextEditingController usernameController =
-      TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
 
-  final TextEditingController emailController =
-      TextEditingController();
+  final TextEditingController emailController = TextEditingController();
 
-  final TextEditingController passwordController =
-      TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   DateTime? tanggalLahir;
 
@@ -35,28 +35,24 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void buatAkun() {
-    if (usernameController.text.isEmpty ||
-        emailController.text.isEmpty ||
-        passwordController.text.isEmpty ||
+    if (usernameController.text.trim().isEmpty ||
+        emailController.text.trim().isEmpty ||
+        passwordController.text.trim().isEmpty ||
         tanggalLahir == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Silakan lengkapi semua data terlebih dahulu.',
-          ),
-        ),
+      CustomAlert.showAlert(
+        context,
+        title: 'Data belum lengkap',
+        message: 'Silakan lengkapi semua data terlebih dahulu.',
+        type: ContentType.warning,
       );
 
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Akun berhasil dibuat!'),
-      ),
-    );
-
-    Navigator.pop(context);
+    Navigator.pop<Map<String, String>>(context, {
+      'username': usernameController.text.trim(),
+      'password': passwordController.text.trim(),
+    });
   }
 
   @override
@@ -68,29 +64,20 @@ class _RegisterPageState extends State<RegisterPage> {
         backgroundColor: const Color(0xFFF8F3EA),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Color(0xFF493B32),
-          ),
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF493B32)),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
         title: const Text(
           'Daftar',
-          style: TextStyle(
-            color: Color(0xFF2F2925),
-            fontSize: 28,
-          ),
+          style: TextStyle(color: Color(0xFF2F2925), fontSize: 28),
         ),
       ),
 
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 30,
-            vertical: 20,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
 
           child: Container(
             width: 450,
@@ -109,8 +96,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
 
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // LOGO / JUDUL
                 Center(
@@ -156,11 +142,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   controller: usernameController,
                   decoration: InputDecoration(
                     hintText: 'Masukkan username',
-                    prefixIcon:
-                        const Icon(Icons.person_outline),
+                    prefixIcon: const Icon(Icons.person_outline),
                     border: OutlineInputBorder(
-                      borderRadius:
-                          BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                 ),
@@ -180,15 +164,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
                 TextField(
                   controller: emailController,
-                  keyboardType:
-                      TextInputType.emailAddress,
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     hintText: 'Masukkan email',
-                    prefixIcon:
-                        const Icon(Icons.email_outlined),
+                    prefixIcon: const Icon(Icons.email_outlined),
                     border: OutlineInputBorder(
-                      borderRadius:
-                          BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                 ),
@@ -211,11 +192,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   obscureText: true,
                   decoration: InputDecoration(
                     hintText: 'Masukkan password',
-                    prefixIcon:
-                        const Icon(Icons.lock_outline),
+                    prefixIcon: const Icon(Icons.lock_outline),
                     border: OutlineInputBorder(
-                      borderRadius:
-                          BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                 ),
@@ -237,17 +216,13 @@ class _RegisterPageState extends State<RegisterPage> {
                   onTap: pilihTanggalLahir,
                   child: Container(
                     width: double.infinity,
-                    padding:
-                        const EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: 15,
                       vertical: 17,
                     ),
                     decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.grey.shade400,
-                      ),
-                      borderRadius:
-                          BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey.shade400),
+                      borderRadius: BorderRadius.circular(12),
                     ),
 
                     child: Row(
@@ -282,15 +257,11 @@ class _RegisterPageState extends State<RegisterPage> {
                   height: 50,
                   child: ElevatedButton(
                     onPressed: buatAkun,
-                    style:
-                        ElevatedButton.styleFrom(
-                      backgroundColor:
-                          const Color(0xFF493B32),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF493B32),
                       foregroundColor: Colors.white,
-                      shape:
-                          RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     child: const Text(

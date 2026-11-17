@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import '../widgets/custom_alert.dart';
 import 'register_page.dart';
 import 'home_page.dart';
 
@@ -16,6 +18,8 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController =
       TextEditingController();
 
+  String? registeredUsername;
+  String? registeredPassword;
   bool obscurePassword = true;
 
   @override
@@ -301,13 +305,12 @@ class _LoginPageState extends State<LoginPage> {
                         alignment: Alignment.centerRight,
                         child: TextButton(
                           onPressed: () {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(
-                              const SnackBar(
-                                content: Text(
+                            CustomAlert.showAlert(
+                              context,
+                              title: 'Info',
+                              message:
                                   'Fitur lupa password akan segera tersedia.',
-                                ),
-                              ),
+                              type: ContentType.warning,
                             );
                           },
                           child: const Text(
@@ -391,20 +394,37 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-    void login() {
+  void login() {
     String username = usernameController.text.trim();
     String password = passwordController.text.trim();
 
     if (username.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Username dan password harus diisi!',
-          ),
-        ),
+      CustomAlert.showAlert(
+        context,
+        title: 'Data belum lengkap',
+        message: 'Username dan password harus diisi!',
+        type: ContentType.warning,
       );
       return;
     }
+
+    if (username != registeredUsername ||
+        password != registeredPassword) {
+      CustomAlert.showAlert(
+        context,
+        title: 'Login gagal',
+        message: 'Username atau password salah.',
+        type: ContentType.failure,
+      );
+      return;
+    }
+
+    CustomAlert.showAlert(
+      context,
+      title: 'Login berhasil',
+      message: 'Selamat datang, $username!',
+      type: ContentType.success,
+    );
 
     Navigator.pushReplacement(
       context,
@@ -416,12 +436,28 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void daftar() {
-    Navigator.push(
+  Future<void> daftar() async {
+    final akunDibuat = await Navigator.push<Map<String, String>>(
       context,
       MaterialPageRoute(
         builder: (context) => const RegisterPage(),
       ),
+    );
+
+    if (!mounted || akunDibuat == null) {
+      return;
+    }
+
+    registeredUsername = akunDibuat['username'];
+    registeredPassword = akunDibuat['password'];
+    usernameController.text = registeredUsername!;
+    passwordController.text = registeredPassword!;
+
+    CustomAlert.showAlert(
+      context,
+      title: 'Berhasil',
+      message: 'Akun berhasil dibuat!',
+      type: ContentType.success,
     );
   }
 }
