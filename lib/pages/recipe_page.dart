@@ -8,6 +8,8 @@ import '../data/favorite_recipe_data.dart';
 import 'recipe_detail_page.dart';
 import '../widgets/search_bar_widget.dart';
 import '../data/recipe_cover.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 
 class RecipePage extends StatefulWidget {
@@ -281,8 +283,29 @@ void initState() {
   future: recipesFuture,
   builder: (context, snapshot) {
     if (snapshot.connectionState == ConnectionState.waiting) {
-      return const Center(
-        child: CircularProgressIndicator(),
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 70, vertical: 20),
+        child: Shimmer.fromColors(
+          baseColor: Colors.grey.shade300,
+          highlightColor: Colors.grey.shade100,
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: 4,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              crossAxisSpacing: 20,
+              mainAxisSpacing: 20,
+              childAspectRatio: 0.85,
+            ),
+            itemBuilder: (_, __) => Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+          ),
+        ),
       );
     }
 
@@ -630,12 +653,23 @@ ClipRRect(
     top: Radius.circular(16),
   ),
   child: recipe['image'].toString().startsWith('http')
-      ? Image.network(
-          recipe['image'],
+      ? CachedNetworkImage(
+          imageUrl: recipe['image'].toString(),
           width: double.infinity,
           height: 145,
           fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
+          placeholder: (context, url) => Container(
+            width: double.infinity,
+            height: 145,
+            color: const Color(0xFFEFD5B8).withValues(alpha: 0.5),
+            child: const Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Color(0xFF493B32),
+              ),
+            ),
+          ),
+          errorWidget: (context, url, error) {
             return Container(
               width: double.infinity,
               height: 145,
