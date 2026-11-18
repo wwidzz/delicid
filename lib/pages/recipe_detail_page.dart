@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:share_plus/share_plus.dart';
 
 class RecipeDetailPage extends StatelessWidget {
   final Map<String, dynamic> recipe;
@@ -61,6 +63,18 @@ class RecipeDetailPage extends StatelessWidget {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text(recipe['name'] ?? 'Detail Resep'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.share),
+            tooltip: 'Bagikan Resep',
+            onPressed: () {
+              Share.share('Cek resep ${recipe['name']} yang lezat ini di aplikasi DelicId!');
+            },
+          ),
+        ],
+      ),
       backgroundColor: const Color(0xFFF8F3EA),
       body: SingleChildScrollView(
         child: Column(
@@ -161,24 +175,23 @@ class RecipeDetailPage extends StatelessWidget {
                   const SizedBox(height: 10),
 
                   // RATING
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.star,
-                        color: Color(0xFFD69B2D),
-                        size: 25,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        recipe['rating']?.toString() ?? '4.5',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          color: Color(0xFF66564C),
-                        ),
-                      ),
-                    ],
-                  ),
-
+                 RatingBar.builder(
+      initialRating: 4.5,
+      minRating: 1,
+      direction: Axis.horizontal,
+      allowHalfRating: true,
+      itemCount: 5,
+      itemSize: 26,
+      itemBuilder: (context, _) => const Icon(
+        Icons.star,
+        color: Color(0xFFD69B2D),
+      ),
+      onRatingUpdate: (rating) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Rating diberikan: $rating bintang')),
+        );
+      },
+    ),
                   const SizedBox(height: 20),
 
                   // DESKRIPSI
