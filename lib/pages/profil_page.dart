@@ -6,13 +6,26 @@ import '../data/favorite_recipe_data.dart';
 import 'recipe_detail_page.dart';
 import '../data/recipe_data.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   final String username;
 
   const ProfilePage({
     super.key,
     this.username = 'Nama Akun',
   });
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+
+  @override
+  void initState() {
+    super.initState();
+
+    FavoriteRecipeData.loadFavorites();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -190,7 +203,7 @@ class ProfilePage extends StatelessWidget {
             // =====================================================
 
             Text(
-              username,
+              widget.username,
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
