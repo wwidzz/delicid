@@ -12,11 +12,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController usernameController =
-      TextEditingController();
-
-  final TextEditingController passwordController =
-      TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   String? registeredUsername;
   String? registeredPassword;
@@ -32,361 +29,346 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Row(
-        children: [
-          // BAGIAN KIRI
-          Expanded(
-            flex: 5,
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Color(0xFFF7EBD7),
-                    Color(0xFFEFD5B8),
-                  ],
+      backgroundColor: Colors.white,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final bool isMobile = constraints.maxWidth < 768;
+
+          if (isMobile) {
+            // TAMPILAN MOBILE / ANDROID (1 KOLOM VERTIKAL)
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  _buildBrandHeader(isMobile: true),
+                  _buildLoginForm(isMobile: true),
+                ],
+              ),
+            );
+          }
+
+          // TAMPILAN DESKTOP / WEB (2 KOLOM KIRI-KANAN)
+          return Row(
+            children: [
+              Expanded(
+                flex: 5,
+                child: _buildBrandHeader(isMobile: false),
+              ),
+              Expanded(
+                flex: 4,
+                child: Container(
+                  color: Colors.white,
+                  child: Center(
+                    child: SingleChildScrollView(
+                      child: _buildLoginForm(isMobile: false),
+                    ),
+                  ),
                 ),
               ),
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: Opacity(
-                      opacity: 0.13,
-                      child: Image.network(
-                        'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=1200',
-                        fit: BoxFit.cover,
-                        errorBuilder:
-                            (context, error, stackTrace) {
-                          return const SizedBox();
-                        },
-                      ),
-                    ),
-                  ),
+            ],
+          );
+        },
+      ),
+    );
+  }
 
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(30),
-                      child: Column(
-                        mainAxisAlignment:
-                            MainAxisAlignment.center,
-                        children: [
-                          Transform.translate(
-                            offset: const Offset(0, -20),
-                            child: Image.asset(
-                              'assets/logo_login.png',
-                              width: 300,
-                              height: 300,
-                              fit: BoxFit.contain,
-                            ),
-                          ),
-
-                          const SizedBox(height: 0),
-
-                          Transform.translate(
-                            offset: const Offset(0, -50),
-                            child: const Text(
-                              'DelicId',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: 'Diplomata',
-                                fontSize: 52,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF493B32),
-                              ),
-                            ),
-                          ),
-
-                          const SizedBox(height: 8),
-
-                          Transform.translate(
-                            offset: const Offset(0, -65),
-                            child: Row(
-                              mainAxisAlignment:
-                                  MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  width: 45,
-                                  height: 1,
-                                  color: const Color(0xFF79675B),
-                                ),
-
-                                const SizedBox(width: 10),
-
-                                const Text(
-                                  'Cooking & Bakery',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontFamily: 'Palace',
-                                    fontSize: 20,
-                                    letterSpacing: 1,
-                                    color: Color(0xFF79675B),
-                                  ),
-                                ),
-
-                                const SizedBox(width: 10),
-
-                                Container(
-                                  width: 45,
-                                  height: 1,
-                                  color: const Color(0xFF79675B),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          const SizedBox(height: 25),
-
-                          Transform.translate(
-                            offset: const Offset(0, -70),
-                            child: const Text(
-                              'Resep lezat untuk setiap momen.',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Color(0xFF66564C),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+  Widget _buildBrandHeader({required bool isMobile}) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(
+        horizontal: 24,
+        vertical: isMobile ? 36 : 30,
+      ),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFFF7EBD7),
+            Color(0xFFEFD5B8),
+          ],
+        ),
+        borderRadius: isMobile
+            ? const BorderRadius.vertical(bottom: Radius.circular(32))
+            : BorderRadius.zero,
+      ),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: isMobile
+                  ? const BorderRadius.vertical(bottom: Radius.circular(32))
+                  : BorderRadius.zero,
+              child: Opacity(
+                opacity: 0.13,
+                child: Image.network(
+                  'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=1200',
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const SizedBox();
+                  },
+                ),
               ),
             ),
           ),
-
-          // BAGIAN KANAN - LOGIN
-          Expanded(
-            flex: 4,
-            child: Container(
-              color: Colors.white,
-              child: Center(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 55,
-                    vertical: 40,
-                  ),
-                  child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                    children: [
-                      const Center(
-                        child: Text(
-                          'Welcome Back!',
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF493B32),
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      const Center(
-                        child: Text(
-                          'Login untuk melanjutkan',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 35),
-
-                      const Text(
-                        'Username',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF493B32),
-                        ),
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      TextField(
-                        controller: usernameController,
-                        decoration: InputDecoration(
-                          hintText: 'Masukkan username',
-                          prefixIcon: const Icon(
-                            Icons.person_outline,
-                            color: Color(0xFF79675B),
-                          ),
-                          filled: true,
-                          fillColor: const Color(0xFFF8F5F0),
-                          border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(12),
-                            borderSide: BorderSide.none,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(12),
-                            borderSide: BorderSide.none,
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(12),
-                            borderSide: const BorderSide(
-                              color: Color(0xFF493B32),
-                              width: 1.5,
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      const Text(
-                        'Password',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF493B32),
-                        ),
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      TextField(
-                        controller: passwordController,
-                        obscureText: obscurePassword,
-                        decoration: InputDecoration(
-                          hintText: 'Masukkan password',
-                          prefixIcon: const Icon(
-                            Icons.lock_outline,
-                            color: Color(0xFF79675B),
-                          ),
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                obscurePassword =
-                                    !obscurePassword;
-                              });
-                            },
-                            icon: Icon(
-                              obscurePassword
-                                  ? Icons.visibility_off_outlined
-                                  : Icons.visibility_outlined,
-                              color:
-                                  const Color(0xFF79675B),
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: const Color(0xFFF8F5F0),
-                          border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(12),
-                            borderSide: BorderSide.none,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(12),
-                            borderSide: BorderSide.none,
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(12),
-                            borderSide: const BorderSide(
-                              color: Color(0xFF493B32),
-                              width: 1.5,
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 30),
-
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () {
-                            CustomAlert.showAlert(
-                              context,
-                              title: 'Info',
-                              message:
-                                  'Fitur lupa password akan segera tersedia.',
-                              type: ContentType.warning,
-                            );
-                          },
-                          child: const Text(
-                            'Lupa password?',
-                            style: TextStyle(
-                              color: Color(0xFF79675B),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 15),
-
-                      SizedBox(
-                        width: double.infinity,
-                        height: 52,
-                        child: ElevatedButton(
-                          onPressed: login,
-                          style:
-                              ElevatedButton.styleFrom(
-                            backgroundColor:
-                                const Color(0xFF493B32),
-                            foregroundColor: Colors.white,
-                            shape:
-                                RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(12),
-                            ),
-                            elevation: 2,
-                          ),
-                          child: const Text(
-                            'LOGIN',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1,
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      Center(
-                        child: Row(
-                          mainAxisAlignment:
-                              MainAxisAlignment.center,
-                          children: [
-                            const Text(
-                              'Belum punya akun?',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 14,
-                              ),
-                            ),
-
-                            TextButton(
-                              onPressed: daftar,
-                              child: const Text(
-                                'Daftar',
-                                style: TextStyle(
-                                  color:
-                                      Color(0xFF493B32),
-                                  fontWeight:
-                                      FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/logo_login.png',
+                width: isMobile ? 140 : 280,
+                height: isMobile ? 140 : 280,
+                fit: BoxFit.contain,
+              ),
+              const SizedBox(height: 8),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  'DelicId',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Diplomata',
+                    fontSize: isMobile ? 34 : 52,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF493B32),
                   ),
                 ),
               ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: isMobile ? 30 : 45,
+                    height: 1,
+                    color: const Color(0xFF79675B),
+                  ),
+                  const SizedBox(width: 10),
+                  Flexible(
+                    child: Text(
+                      'Cooking & Bakery',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Palace',
+                        fontSize: isMobile ? 16 : 20,
+                        letterSpacing: 1,
+                        color: const Color(0xFF79675B),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Container(
+                    width: isMobile ? 30 : 45,
+                    height: 1,
+                    color: const Color(0xFF79675B),
+                  ),
+                ],
+              ),
+              SizedBox(height: isMobile ? 12 : 20),
+              Text(
+                'Resep lezat untuk setiap momen.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: isMobile ? 14 : 16,
+                  color: const Color(0xFF66564C),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoginForm({required bool isMobile}) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 28 : 55,
+        vertical: isMobile ? 32 : 40,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Text(
+              'Welcome Back!',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: isMobile ? 26 : 30,
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFF493B32),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Center(
+            child: Text(
+              'Login untuk melanjutkan',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+          const SizedBox(height: 28),
+          const Text(
+            'Username',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF493B32),
+            ),
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            controller: usernameController,
+            decoration: InputDecoration(
+              hintText: 'Masukkan username',
+              prefixIcon: const Icon(
+                Icons.person_outline,
+                color: Color(0xFF79675B),
+              ),
+              filled: true,
+              fillColor: const Color(0xFFF8F5F0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(
+                  color: Color(0xFF493B32),
+                  width: 1.5,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            'Password',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF493B32),
+            ),
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            controller: passwordController,
+            obscureText: obscurePassword,
+            decoration: InputDecoration(
+              hintText: 'Masukkan password',
+              prefixIcon: const Icon(
+                Icons.lock_outline,
+                color: Color(0xFF79675B),
+              ),
+              suffixIcon: IconButton(
+                onPressed: () {
+                  setState(() {
+                    obscurePassword = !obscurePassword;
+                  });
+                },
+                icon: Icon(
+                  obscurePassword
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined,
+                  color: const Color(0xFF79675B),
+                ),
+              ),
+              filled: true,
+              fillColor: const Color(0xFFF8F5F0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(
+                  color: Color(0xFF493B32),
+                  width: 1.5,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: () {
+                CustomAlert.showAlert(
+                  context,
+                  title: 'Info',
+                  message: 'Fitur lupa password akan segera tersedia.',
+                  type: ContentType.warning,
+                );
+              },
+              child: const Text(
+                'Lupa password?',
+                style: TextStyle(
+                  color: Color(0xFF79675B),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            height: 52,
+            child: ElevatedButton(
+              onPressed: login,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF493B32),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 2,
+              ),
+              child: const Text(
+                'LOGIN',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Center(
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                const Text(
+                  'Belum punya akun?',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                  ),
+                ),
+                TextButton(
+                  onPressed: daftar,
+                  child: const Text(
+                    'Daftar',
+                    style: TextStyle(
+                      color: Color(0xFF493B32),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -408,8 +390,7 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    if (username != registeredUsername ||
-        password != registeredPassword) {
+    if (username != registeredUsername || password != registeredPassword) {
       CustomAlert.showAlert(
         context,
         title: 'Login gagal',
@@ -436,22 +417,22 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<void> daftar() async {
-    final akunDibuat = await Navigator.push<Map<String, String>>(
+Future<void> daftar() async {
+    final hasil = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => const RegisterPage(),
       ),
     );
 
-    if (!mounted || akunDibuat == null) {
+    if (!mounted || hasil == null || hasil is! Map) {
       return;
     }
 
-    registeredUsername = akunDibuat['username'];
-    registeredPassword = akunDibuat['password'];
-    usernameController.text = registeredUsername!;
-    passwordController.text = registeredPassword!;
+    registeredUsername = hasil['username']?.toString();
+    registeredPassword = hasil['password']?.toString();
+    usernameController.text = registeredUsername ?? '';
+    passwordController.text = registeredPassword ?? '';
 
     CustomAlert.showAlert(
       context,

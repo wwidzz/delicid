@@ -11,7 +11,6 @@ import '../data/recipe_cover.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-
 class RecipePage extends StatefulWidget {
   const RecipePage({super.key});
 
@@ -21,48 +20,46 @@ class RecipePage extends StatefulWidget {
 
 class _RecipePageState extends State<RecipePage>
     with SingleTickerProviderStateMixin {
-
   late AnimationController _backgroundController;
   final ApiService apiService = ApiService();
   late Future<List<RecipeModel>> recipesFuture;
 
-  final TextEditingController searchController =
-      TextEditingController();
+  final TextEditingController searchController = TextEditingController();
 
   String searchText = '';
   String? selectedCategory;
-  
+
   // FUNGSI SEARCH
-    void _handleSearch(String query) {
-      setState(() {
-        recipesFuture = apiService.fetchRecipes(search: query.trim());
-      });
-    }
+  void _handleSearch(String query) {
+    setState(() {
+      recipesFuture = apiService.fetchRecipes(search: query.trim());
+    });
+  }
 
- @override
-void initState() {
-  super.initState();
+  @override
+  void initState() {
+    super.initState();
 
-  recipesFuture = apiService.fetchRecipes();
+    recipesFuture = apiService.fetchRecipes();
 
-  _backgroundController = AnimationController(
-    vsync: this,
-    duration: const Duration(seconds: 12),
-  )..repeat(reverse: true);
-}
+    _backgroundController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 12),
+    )..repeat(reverse: true);
+  }
 
   @override
   void dispose() {
     _backgroundController.dispose();
     searchController.dispose();
     super.dispose();
-  
-}
+  }
+
   // =========================================================
   // DATA RESEP
   // =========================================================
 
-    final List<Map<String, dynamic>> recipes = RecipeCover.recipes;
+  final List recipes = RecipeCover.recipes;
 
   // =========================================================
   // KATEGORI
@@ -83,9 +80,9 @@ void initState() {
   // FILTER RESEP
   // =========================================================
 
-  List<Map<String, dynamic>> getRecipes(
+  List getRecipes(
     String category,
-    List<Map<String, dynamic>> allRecipes,
+    List allRecipes,
   ) {
     return allRecipes.where((recipe) {
       return recipe['category'] == category;
@@ -98,21 +95,20 @@ void initState() {
 
   @override
   Widget build(BuildContext context) {
+    final bool isMobile = MediaQuery.of(context).size.width < 768;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F3EA),
-
       body: Stack(
         children: [
           // =====================================================
           // BACKGROUND
           // =====================================================
-
           Positioned.fill(
             child: AnimatedBuilder(
               animation: _backgroundController,
               builder: (context, child) {
-                final double value =
-                    _backgroundController.value;
+                final double value = _backgroundController.value;
 
                 return Transform.translate(
                   offset: Offset(
@@ -126,11 +122,9 @@ void initState() {
                       child: Image.network(
                         'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=1600',
                         fit: BoxFit.cover,
-                        errorBuilder:
-                            (context, error, stackTrace) {
+                        errorBuilder: (context, error, stackTrace) {
                           return Container(
-                            color:
-                                const Color(0xFFF8F3EA),
+                            color: const Color(0xFFF8F3EA),
                           );
                         },
                       ),
@@ -144,29 +138,25 @@ void initState() {
           // =====================================================
           // OVERLAY CREAM
           // =====================================================
-
           Positioned.fill(
             child: Container(
-              color:
-                  const Color(0xFFF8F3EA).withValues(alpha: 0.68),
+              color: const Color(0xFFF8F3EA).withValues(alpha: 0.68),
             ),
           ),
 
           // =====================================================
           // ISI WEBSITE
           // =====================================================
-
           SingleChildScrollView(
             child: Column(
               children: [
                 // =================================================
-                // NAVBAR
+                // NAVBAR RESPONSIVE
                 // =================================================
-
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 50,
-                    vertical: 18,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isMobile ? 16 : 50,
+                    vertical: isMobile ? 12 : 18,
                   ),
                   decoration: const BoxDecoration(
                     color: Colors.white,
@@ -178,202 +168,234 @@ void initState() {
                       ),
                     ],
                   ),
-                  child: Row(
-                    children: [
-                      const Text(
-                        'DelicId',
-                        style: TextStyle(
-                          fontFamily: 'Diplomata',
-                          fontSize: 28,
-                          color: Color(0xFF493B32),
+                  child: isMobile
+                      ? Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  'DelicId',
+                                  style: TextStyle(
+                                    fontFamily: 'Diplomata',
+                                    fontSize: 22,
+                                    color: Color(0xFF493B32),
+                                  ),
+                                ),
+                                IconButton(
+                                  tooltip: 'Logout',
+                                  onPressed: () {
+                                    Navigator.popUntil(
+                                      context,
+                                      (route) => route.isFirst,
+                                    );
+                                  },
+                                  icon: const Icon(
+                                    Icons.power_settings_new,
+                                    color: Color(0xFF493B32),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: [
+                                  _navItem(context, 'Home', false, isMobile: true),
+                                  _navItem(context, 'About Us', false, isMobile: true),
+                                  _navItem(context, 'Recipe', true, isMobile: true),
+                                  _navItem(context, 'Cooking Class', false, isMobile: true),
+                                  _navItem(context, 'Profil', false, isMobile: true),
+                                ],
+                              ),
+                            ),
+                          ],
+                        )
+                      : Row(
+                          children: [
+                            const Text(
+                              'DelicId',
+                              style: TextStyle(
+                                fontFamily: 'Diplomata',
+                                fontSize: 28,
+                                color: Color(0xFF493B32),
+                              ),
+                            ),
+                            const Spacer(),
+                            _navItem(context, 'Home', false),
+                            _navItem(context, 'About Us', false),
+                            _navItem(context, 'Recipe', true),
+                            _navItem(context, 'Cooking Class', false),
+                            _navItem(context, 'Profil', false),
+                            const SizedBox(width: 15),
+                            IconButton(
+                              tooltip: 'Logout',
+                              onPressed: () {
+                                Navigator.popUntil(
+                                  context,
+                                  (route) => route.isFirst,
+                                );
+                              },
+                              icon: const Icon(
+                                Icons.power_settings_new,
+                                color: Color(0xFF493B32),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-
-                      const Spacer(),
-
-                      _navItem(
-                        context,
-                        'Home',
-                        false,
-                      ),
-
-                      _navItem(
-                        context,
-                        'About Us',
-                        false,
-                      ),
-
-                      _navItem(
-                        context,
-                        'Recipe',
-                        true,
-                      ),
-
-                      _navItem(
-                        context,
-                        'Cooking Class',
-                        false,
-                      ),
-
-                      _navItem(
-                        context,
-                        'Profil',
-                        false,
-                      ),
-
-                      const SizedBox(width: 15),
-
-                      IconButton(
-                        tooltip: 'Logout',
-                        onPressed: () {
-                          Navigator.popUntil(
-                            context,
-                            (route) => route.isFirst,
-                          );
-                        },
-                        icon: const Icon(
-                          Icons.power_settings_new,
-                          color: Color(0xFF493B32),
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
 
                 // =================================================
                 // JUDUL
                 // =================================================
+                SizedBox(height: isMobile ? 30 : 55),
 
-                const SizedBox(height: 55),
-
-                const Text(
+                Text(
                   'Recipe',
                   style: TextStyle(
-                    fontSize: 52,
+                    fontSize: isMobile ? 38 : 52,
                     fontFamily: 'AbrilFatface',
-                    color: Color(0xFF493B32),
+                    color: const Color(0xFF493B32),
                   ),
                 ),
 
                 const SizedBox(height: 8),
 
-                const Text(
-                  'Temukan resep favoritmu dan masak dengan penuh cinta ♡',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 17,
-                    color: Color(0xFF79675B),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: isMobile ? 20 : 0),
+                  child: Text(
+                    'Temukan resep favoritmu dan masak dengan penuh cinta ♡',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: isMobile ? 14 : 17,
+                      color: const Color(0xFF79675B),
+                    ),
                   ),
                 ),
 
-                const SizedBox(height: 25),
+                SizedBox(height: isMobile ? 20 : 25),
 
                 // =================================================
                 // SEARCH BAR
                 // =================================================
-                SearchBarWidget(onSearch: _handleSearch),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 0),
+                  child: SearchBarWidget(onSearch: _handleSearch),
+                ),
 
-                const SizedBox(height: 55),
+                SizedBox(height: isMobile ? 30 : 55),
 
                 // =================================================
                 // SEMUA KATEGORI
                 // =================================================
-
                 FutureBuilder<List<RecipeModel>>(
-  future: recipesFuture,
-  builder: (context, snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 70, vertical: 20),
-        child: Shimmer.fromColors(
-          baseColor: Colors.grey.shade300,
-          highlightColor: Colors.grey.shade100,
-          child: GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: 4,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
-              crossAxisSpacing: 20,
-              mainAxisSpacing: 20,
-              childAspectRatio: 0.85,
-            ),
-            itemBuilder: (_, __) => Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-              ),
-            ),
-          ),
-        ),
-      );
-    }
+                  future: recipesFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: isMobile ? 16 : 70,
+                          vertical: 20,
+                        ),
+                        child: Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.grey.shade100,
+                          child: GridView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: 4,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: isMobile ? 2 : 4,
+                              crossAxisSpacing: isMobile ? 12 : 20,
+                              mainAxisSpacing: isMobile ? 12 : 20,
+                              childAspectRatio: isMobile ? 0.78 : 0.85,
+                            ),
+                            itemBuilder: (context, index) => Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
 
-    if (snapshot.hasError) {
-      return Center(
-        child: Text('Gagal mengambil data: ${snapshot.error}'),
-      );
-    }
+                    if (snapshot.hasError) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Center(
+                          child: Text(
+                            'Gagal mengambil data: ${snapshot.error}',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      );
+                    }
 
-    final recipeList = snapshot.data ?? [];
+                    final recipeList = snapshot.data ?? [];
 
-    if (recipeList.isEmpty) {
-      return const Center(
-        child: Text('Resep tidak ditemukan'),
-      );
-    }
+                    if (recipeList.isEmpty) {
+                      return const Center(
+                        child: Text('Resep tidak ditemukan'),
+                      );
+                    }
 
-   final allRecipes = recipeList.map((recipe) {
-  return {
-    'id': recipe.id,
-    'name': recipe.title,
-    'image': recipe.imageUrl,
-    'category': recipe.category,
-    'rating': '4.5',
-    'description': 'Masakan ${recipe.category} dari ${recipe.area}.',
-    'area': recipe.area,
-    'ingredients': recipe.ingredients,
-    'tools': <String>[],
-    'steps': recipe.instructions
-        .split(RegExp(r'\r?\n+'))
-        .where((step) => step.trim().isNotEmpty)
-        .toList(),
-  };
-}).toList();
+                    final allRecipes = recipeList.map((recipe) {
+                      return <String, dynamic>{
+                        'id': recipe.id,
+                        'name': recipe.title,
+                        'image': recipe.imageUrl,
+                        'category': recipe.category,
+                        'rating': '4.5',
+                        'description':
+                            'Masakan ${recipe.category} dari ${recipe.area}.',
+                        'area': recipe.area,
+                        'ingredients': recipe.ingredients,
+                        'tools': <String>[],
+                        'steps': recipe.instructions
+                            .split(RegExp(r'\r?\n+'))
+                            .where((step) => step.trim().isNotEmpty)
+                            .toList(),
+                      };
+                    }).toList();
 
-    final apiCategories = allRecipes
-        .map((recipe) => recipe['category'].toString())
-        .toSet()
-        .toList();
+                    final apiCategories = allRecipes
+                        .map((recipe) => recipe['category'].toString())
+                        .toSet()
+                        .toList();
 
-    return Column(
-      children: [
-        _categoryGrid(apiCategories),
+                    return Column(
+                      children: [
+                        _categoryGrid(apiCategories, isMobile: isMobile),
+                        SizedBox(height: isMobile ? 25 : 35),
+                        ...(selectedCategory == null
+                                ? apiCategories
+                                : apiCategories.where(
+                                    (category) => category == selectedCategory,
+                                  ))
+                            .map(
+                          (category) => _categorySection(
+                            category,
+                            allRecipes,
+                            isMobile: isMobile,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
 
-        const SizedBox(height: 35),
+                SizedBox(height: isMobile ? 40 : 60),
 
-        ...(selectedCategory == null
-            ? apiCategories
-            : apiCategories.where(
-                (category) => category == selectedCategory,
-              )).map(
-          (category) => _categorySection(category, allRecipes),
-        ),
-      ],
-    );
-  },
-),
-
-                const SizedBox(height: 60),
-
-                
                 // =================================================
                 // FOOTER
                 // =================================================
-
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(35),
+                  padding: EdgeInsets.all(isMobile ? 24 : 35),
                   color: const Color(0xFF493B32),
                   child: const Column(
                     children: [
@@ -385,9 +407,7 @@ void initState() {
                           color: Colors.white,
                         ),
                       ),
-
                       SizedBox(height: 8),
-
                       Text(
                         'Cooking & Bakery',
                         style: TextStyle(
@@ -396,9 +416,7 @@ void initState() {
                           color: Colors.white70,
                         ),
                       ),
-
                       SizedBox(height: 8),
-
                       Text(
                         '© 2026 DelicId',
                         style: TextStyle(
@@ -416,136 +434,134 @@ void initState() {
     );
   }
 
- 
-// =========================================================
-// GRID KATEGORI
-// =========================================================
+  // =========================================================
+  // GRID KATEGORI
+  // =========================================================
 
-Widget _categoryGrid(List<String> categories) {
-  final uniqueCategories = categories.toSet().toList();
+  Widget _categoryGrid(List<String> categories, {required bool isMobile}) {
+    final uniqueCategories = categories.toSet().toList();
 
-  return Padding(
-    padding: const EdgeInsets.symmetric(
-      horizontal: 70,
-    ),
-    child: GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: uniqueCategories.length,
-      gridDelegate:
-          const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
-        crossAxisSpacing: 15,
-        mainAxisSpacing: 15,
-        childAspectRatio: 3.2,
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 16 : 70,
       ),
-      itemBuilder: (context, index) {
-        final category = uniqueCategories[index];
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: uniqueCategories.length,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: isMobile ? 2 : 4,
+          crossAxisSpacing: isMobile ? 10 : 15,
+          mainAxisSpacing: isMobile ? 10 : 15,
+          childAspectRatio: isMobile ? 2.8 : 3.2,
+        ),
+        itemBuilder: (context, index) {
+          final category = uniqueCategories[index];
+          final bool isSelected = selectedCategory == category;
 
-        return InkWell(
-          onTap: () {
-            setState(() {
-              selectedCategory =
-                  selectedCategory == category ? null : category;
-            });
-          },
-          borderRadius: BorderRadius.circular(15),
-          child: Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFFC09A8A)
-                  .withValues(alpha: 0.72),
-              borderRadius: BorderRadius.circular(15),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.10),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  _categoryIcon(category),
-                  color: const Color(0xFF493B32),
-                  size: 25,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  category,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF493B32),
+          return InkWell(
+            onTap: () {
+              setState(() {
+                selectedCategory = isSelected ? null : category;
+              });
+            },
+            borderRadius: BorderRadius.circular(15),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? const Color(0xFF493B32)
+                    : const Color(0xFFC09A8A).withValues(alpha: 0.72),
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.10),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
                   ),
-                ),
-              ],
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    _categoryIcon(category),
+                    color: isSelected ? Colors.white : const Color(0xFF493B32),
+                    size: isMobile ? 20 : 25,
+                  ),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      category,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: isMobile ? 13 : 14,
+                        fontWeight: FontWeight.bold,
+                        color:
+                            isSelected ? Colors.white : const Color(0xFF493B32),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-      },
-    ),
-  );
-}
-
+          );
+        },
+      ),
+    );
+  }
 
   // =========================================================
   // KATEGORI
   // =========================================================
 
   Widget _categorySection(
-  String category,
-  List<Map<String, dynamic>> allRecipes,
-) {
-  final categoryRecipes =
-      getRecipes(category, allRecipes);
+    String category,
+    List allRecipes, {
+    required bool isMobile,
+  }) {
+    final categoryRecipes = getRecipes(category, allRecipes);
 
     if (categoryRecipes.isEmpty) {
       return const SizedBox.shrink();
     }
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 35),
+      padding: EdgeInsets.only(bottom: isMobile ? 24 : 35),
       child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding:
-                const EdgeInsets.symmetric(
-              horizontal: 70,
+            padding: EdgeInsets.symmetric(
+              horizontal: isMobile ? 16 : 70,
             ),
             child: Row(
               children: [
                 Icon(
                   _categoryIcon(category),
-                  color:
-                      const Color(0xFF493B32),
-                  size: 25,
+                  color: const Color(0xFF493B32),
+                  size: isMobile ? 22 : 25,
                 ),
-
                 const SizedBox(width: 10),
-
-                Text(
-                  category,
-                  style: const TextStyle(
-                    fontSize: 23,
-                    fontWeight:
-                        FontWeight.bold,
-                    color:
-                        Color(0xFF493B32),
+                Expanded(
+                  child: Text(
+                    category,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: isMobile ? 19 : 23,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF493B32),
+                    ),
                   ),
                 ),
-
-                const Spacer(),
-
+                const SizedBox(width: 8),
                 const Text(
                   'Geser →',
                   style: TextStyle(
                     fontSize: 13,
-                    color:
-                        Color(0xFF79675B),
+                    color: Color(0xFF79675B),
                   ),
                 ),
               ],
@@ -557,31 +573,21 @@ Widget _categoryGrid(List<String> categories) {
           // =====================================================
           // HORIZONTAL SCROLL SETIAP KATEGORI
           // =====================================================
-
           SizedBox(
             height: 285,
             child: ListView.separated(
-              scrollDirection:
-                  Axis.horizontal,
-
-              padding:
-                  const EdgeInsets.symmetric(
-                horizontal: 70,
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.symmetric(
+                horizontal: isMobile ? 16 : 70,
               ),
-
-              itemCount:
-                  categoryRecipes.length,
-
-              separatorBuilder:
-                  (context, index) =>
-                      const SizedBox(
-                width: 15,
+              itemCount: categoryRecipes.length,
+              separatorBuilder: (context, index) => SizedBox(
+                width: isMobile ? 12 : 15,
               ),
-
-              itemBuilder:
-                  (context, index) {
+              itemBuilder: (context, index) {
                 return _recipeCard(
                   categoryRecipes[index],
+                  isMobile: isMobile,
                 );
               },
             ),
@@ -623,16 +629,14 @@ Widget _categoryGrid(List<String> categories) {
     }
   }
 
-  
   // =========================================================
   // RECIPE CARD
   // =========================================================
 
-  Widget _recipeCard(Map<String, dynamic> recipe) {
+  Widget _recipeCard(Map<String, dynamic> recipe, {required bool isMobile}) {
     return Container(
-      width: 205,
+      width: isMobile ? 185 : 205,
       decoration: BoxDecoration(
-        // COKLAT MUDA AGAK PINK + LEBIH TRANSPARAN
         color: const Color(0xFFC09A8A).withValues(alpha: 0.72),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
@@ -646,62 +650,60 @@ Widget _categoryGrid(List<String> categories) {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-// GAMBAR
-          
-ClipRRect(
-  borderRadius: const BorderRadius.vertical(
-    top: Radius.circular(16),
-  ),
-  child: recipe['image'].toString().startsWith('http')
-      ? CachedNetworkImage(
-          imageUrl: recipe['image'].toString(),
-          width: double.infinity,
-          height: 145,
-          fit: BoxFit.cover,
-          placeholder: (context, url) => Container(
-            width: double.infinity,
-            height: 145,
-            color: const Color(0xFFEFD5B8).withValues(alpha: 0.5),
-            child: const Center(
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: Color(0xFF493B32),
-              ),
+          // GAMBAR
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(16),
             ),
+            child: recipe['image'].toString().startsWith('http')
+                ? CachedNetworkImage(
+                    imageUrl: recipe['image'].toString(),
+                    width: double.infinity,
+                    height: 145,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      width: double.infinity,
+                      height: 145,
+                      color: const Color(0xFFEFD5B8).withValues(alpha: 0.5),
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Color(0xFF493B32),
+                        ),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) {
+                      return Container(
+                        width: double.infinity,
+                        height: 145,
+                        color: const Color(0xFFEFD5B8),
+                        child: const Icon(
+                          Icons.restaurant,
+                          size: 45,
+                          color: Color(0xFF493B32),
+                        ),
+                      );
+                    },
+                  )
+                : Image.asset(
+                    recipe['image'],
+                    width: double.infinity,
+                    height: 145,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        width: double.infinity,
+                        height: 145,
+                        color: const Color(0xFFEFD5B8),
+                        child: const Icon(
+                          Icons.restaurant,
+                          size: 45,
+                          color: Color(0xFF493B32),
+                        ),
+                      );
+                    },
+                  ),
           ),
-          errorWidget: (context, url, error) {
-            return Container(
-              width: double.infinity,
-              height: 145,
-              color: const Color(0xFFEFD5B8),
-              child: const Icon(
-                Icons.restaurant,
-                size: 45,
-                color: Color(0xFF493B32),
-              ),
-            );
-          },
-        )
-      : Image.asset(
-          recipe['image'],
-          width: double.infinity,
-          height: 145,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return Container(
-              width: double.infinity,
-              height: 145,
-              color: const Color(0xFFEFD5B8),
-              child: const Icon(
-                Icons.restaurant,
-                size: 45,
-                color: Color(0xFF493B32),
-              ),
-            );
-          },
-        ),
-),
-
 
           // INFORMASI
           Padding(
@@ -793,7 +795,7 @@ ClipRRect(
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
-                           const Color(0xFF493B32).withValues(alpha: 0.78),
+                            const Color(0xFF493B32).withValues(alpha: 0.78),
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 13,
@@ -824,23 +826,22 @@ ClipRRect(
     );
   }
 
-
   // =========================================================
   // DETAIL RESEP
   // =========================================================
 
   void _showRecipeDetail(
-  Map<String, dynamic> recipe,
-) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => RecipeDetailPage(
-        recipe: recipe,
+    Map<String, dynamic> recipe,
+  ) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RecipeDetailPage(
+          recipe: recipe,
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   // =========================================================
   // NAVBAR
@@ -849,18 +850,15 @@ ClipRRect(
   Widget _navItem(
     BuildContext context,
     String title,
-    bool active,
-  ) {
+    bool active, {
+    bool isMobile = false,
+  }) {
     return Padding(
-      padding:
-          const EdgeInsets.symmetric(
-        horizontal: 10,
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 4 : 10,
       ),
-
       child: Column(
-        mainAxisSize:
-            MainAxisSize.min,
-
+        mainAxisSize: MainAxisSize.min,
         children: [
           TextButton(
             onPressed: () {
@@ -871,7 +869,6 @@ ClipRRect(
                   (route) => route.isFirst,
                 );
               }
-
               // ABOUT US
               else if (title == 'About Us') {
                 Navigator.push(
@@ -884,13 +881,10 @@ ClipRRect(
                   ),
                 );
               }
-
               // RECIPE
-              else if (title ==
-                  'Recipe') {
+              else if (title == 'Recipe') {
                 // Sudah di halaman Recipe.
               }
-
               // COOKING CLASS
               else if (title == 'Cooking Class') {
                 Navigator.push(
@@ -907,7 +901,6 @@ ClipRRect(
                   ),
                 );
               }
-
               // PROFIL
               else if (title == 'Profil') {
                 Navigator.push(
@@ -925,27 +918,20 @@ ClipRRect(
                 );
               }
             },
-
             child: Text(
               title,
               style: TextStyle(
-                color:
-                    const Color(
-                        0xFF493B32),
-                fontWeight: active
-                    ? FontWeight.bold
-                    : FontWeight.w600,
+                fontSize: isMobile ? 13 : 14,
+                color: const Color(0xFF493B32),
+                fontWeight: active ? FontWeight.bold : FontWeight.w600,
               ),
             ),
           ),
-
           if (active)
             Container(
-              width: 50,
+              width: isMobile ? 35 : 50,
               height: 2,
-              color:
-                  const Color(
-                      0xFF493B32),
+              color: const Color(0xFF493B32),
             ),
         ],
       ),
