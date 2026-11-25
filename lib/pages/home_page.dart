@@ -23,44 +23,52 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+final bool isMobile = screenWidth < 768;
     return Scaffold(
       backgroundColor: const Color(0xFFF8F3EA),
       body: SingleChildScrollView(
         child: Column(
           children: [
             // NAVBAR
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 50,
-                vertical: 18,
+           
+// NAVBAR
+Container(
+  padding: EdgeInsets.symmetric(
+    horizontal: isMobile ? 16 : 50,
+    vertical: 18,
+  ),
+  decoration: const BoxDecoration(
+    color: Colors.white,
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black12,
+        blurRadius: 8,
+        offset: Offset(0, 2),
+      ),
+    ],
+  ),
+  child: isMobile
+      ? Column(
+          children: [
+            const Text(
+              'DelicId',
+              style: TextStyle(
+                fontFamily: 'Diplomata',
+                fontSize: 24,
+                color: Color(0xFF493B32),
               ),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 8,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
+            ),
+            const SizedBox(height: 10),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  const Text(
-                    'DelicId',
-                    style: TextStyle(
-                      fontFamily: 'Diplomata',
-                      fontSize: 28,
-                      color: Color(0xFF493B32),
-                    ),
-                  ),
-                  const Spacer(),
                   _navItem(context, 'Home', true),
                   _navItem(context, 'About Us', false),
                   _navItem(context, 'Recipe', false),
                   _navItem(context, 'Cooking Class', false),
                   _navItem(context, 'Profil', false),
-                  const SizedBox(width: 15),
                   IconButton(
                     tooltip: 'Logout',
                     onPressed: () {
@@ -74,117 +82,238 @@ class HomePage extends StatelessWidget {
                 ],
               ),
             ),
+          ],
+        )
+      : Row(
+          children: [
+            const Text(
+              'DelicId',
+              style: TextStyle(
+                fontFamily: 'Diplomata',
+                fontSize: 28,
+                color: Color(0xFF493B32),
+              ),
+            ),
+            const Spacer(),
+            _navItem(context, 'Home', true),
+            _navItem(context, 'About Us', false),
+            _navItem(context, 'Recipe', false),
+            _navItem(context, 'Cooking Class', false),
+            _navItem(context, 'Profil', false),
+            const SizedBox(width: 15),
+            IconButton(
+              tooltip: 'Logout',
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(
+                Icons.power_settings_new,
+                color: Color(0xFF493B32),
+              ),
+            ),
+          ],
+        ),
+),
+
 
             // WELCOME
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 60,
-                vertical: 60,
+          
+// WELCOME
+Container(
+  width: double.infinity,
+  padding: EdgeInsets.symmetric(
+    horizontal: isMobile ? 16 : 60,
+    vertical: isMobile ? 30 : 60,
+  ),
+  child: isMobile
+      ? Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Selamat datang, $username!',
+              style: const TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF493B32),
               ),
-              child: Row(
+            ),
+            const SizedBox(height: 15),
+            const Text(
+              'Temukan resep lezat dan inspirasi '
+              'memasak untuk setiap momen.',
+              style: TextStyle(
+                fontSize: 16,
+                color: Color(0xFF79675B),
+                height: 1.5,
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (
+                      context,
+                      animation,
+                      secondaryAnimation,
+                    ) => const RecipePage(),
+                    transitionDuration: Duration.zero,
+                    reverseTransitionDuration: Duration.zero,
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF493B32),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 25,
+                  vertical: 15,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text(
+                'Jelajahi Resep',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const SizedBox(height: 30),
+            CarouselSlider(
+              options: CarouselOptions(
+                height: 220,
+                autoPlay: true,
+                autoPlayInterval: const Duration(seconds: 3),
+                enlargeCenterPage: true,
+                viewportFraction: 0.9,
+              ),
+              items: bannerImages.map((img) {
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(25),
+                  child: Image.network(
+                    img,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: const Color(0xFFEFD5B8),
+                        child: const Icon(
+                          Icons.restaurant,
+                          size: 80,
+                          color: Color(0xFF493B32),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+        )
+      : Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Selamat datang, $username!',
-                          style: const TextStyle(
-                            fontSize: 38,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF493B32),
-                          ),
-                        ),
-                        const SizedBox(height: 15),
-                        const Text(
-                          'Temukan resep lezat dan inspirasi '
-                          'memasak untuk setiap momen.',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Color(0xFF79675B),
-                            height: 1.5,
-                          ),
-                        ),
-                        const SizedBox(height: 25),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              PageRouteBuilder(
-                                pageBuilder: (
-                                  context,
-                                  animation,
-                                  secondaryAnimation,
-                                ) => const RecipePage(),
-                                transitionDuration: Duration.zero,
-                                reverseTransitionDuration: Duration.zero,
-                              ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF493B32),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 30,
-                              vertical: 16,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          child: const Text(
-                            'Jelajahi Resep',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
+                  Text(
+                    'Selamat datang, $username!',
+                    style: const TextStyle(
+                      fontSize: 38,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF493B32),
                     ),
                   ),
-
-                  const SizedBox(width: 40),
-
-                  // CAROUSEL BANNER
-                  Expanded(
-                    child: CarouselSlider(
-                      options: CarouselOptions(
-                        height: 320,
-                        autoPlay: true,
-                        autoPlayInterval: const Duration(seconds: 3),
-                        autoPlayAnimationDuration:
-                            const Duration(milliseconds: 800),
-                        enlargeCenterPage: true,
-                        viewportFraction: 0.9,
+                  const SizedBox(height: 15),
+                  const Text(
+                    'Temukan resep lezat dan inspirasi '
+                    'memasak untuk setiap momen.',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Color(0xFF79675B),
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 25),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (
+                            context,
+                            animation,
+                            secondaryAnimation,
+                          ) => const RecipePage(),
+                          transitionDuration: Duration.zero,
+                          reverseTransitionDuration: Duration.zero,
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF493B32),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 30,
+                        vertical: 16,
                       ),
-                      items: bannerImages.map((img) {
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(25),
-                          child: Image.network(
-                            img,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                color: const Color(0xFFEFD5B8),
-                                child: const Icon(
-                                  Icons.restaurant,
-                                  size: 80,
-                                  color: Color(0xFF493B32),
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      }).toList(),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      'Jelajahi Resep',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
+            const SizedBox(width: 40),
+            Expanded(
+              child: CarouselSlider(
+                options: CarouselOptions(
+                  height: 320,
+                  autoPlay: true,
+                  autoPlayInterval: const Duration(seconds: 3),
+                  autoPlayAnimationDuration:
+                      const Duration(milliseconds: 800),
+                  enlargeCenterPage: true,
+                  viewportFraction: 0.9,
+                ),
+                items: bannerImages.map((img) {
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(25),
+                    child: Image.network(
+                      img,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: const Color(0xFFEFD5B8),
+                          child: const Icon(
+                            Icons.restaurant,
+                            size: 80,
+                            color: Color(0xFF493B32),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        ),
+),
 
-            const SizedBox(height: 70),
+
+      SizedBox(height: isMobile ? 30 : 70),
 
             // FOOTER
             Container(
