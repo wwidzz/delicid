@@ -78,6 +78,10 @@ class CookingClassPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isMobile = screenWidth < 768;
+    final bool isCompactNavbar = screenWidth < 1000;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F3EA),
 
@@ -113,102 +117,131 @@ class CookingClassPage extends StatelessWidget {
             child: Column(
               children: [
                 // =====================================================
-                // NAVBAR
-                // =====================================================
+// NAVBAR
+// =====================================================
 
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 50,
-                    vertical: 18,
-                  ),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 8,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      const Text(
-                        'DelicId',
-                        style: TextStyle(
-                          fontFamily: 'Diplomata',
-                          fontSize: 28,
-                          color: Color(0xFF493B32),
-                        ),
-                      ),
+Container(
+  padding: EdgeInsets.symmetric(
+    horizontal: isMobile ? 16 : 50,
+    vertical: 18,
+  ),
+  decoration: const BoxDecoration(
+    color: Colors.white,
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black12,
+        blurRadius: 8,
+        offset: Offset(0, 2),
+      ),
+    ],
+  ),
 
-                      const Spacer(),
-
-                      _navItem(
-                        context,
-                        'Home',
-                        false,
-                      ),
-
-                      _navItem(
-                        context,
-                        'About Us',
-                        false,
-                      ),
-
-                      _navItem(
-                        context,
-                        'Recipe',
-                        false,
-                      ),
-
-                      _navItem(
-                        context,
-                        'Cooking Class',
-                        true,
-                      ),
-
-                      _navItem(
-                        context,
-                        'Profil',
-                        false,
-                      ),
-
-                      const SizedBox(width: 15),
-
-                      IconButton(
-                        tooltip: 'Logout',
-                        onPressed: () {
-                          Navigator.popUntil(
-                            context,
-                            (route) => route.isFirst,
-                          );
-                        },
-                        icon: const Icon(
-                          Icons.power_settings_new,
-                          color: Color(0xFF493B32),
-                        ),
-                      ),
-                    ],
+  child: isCompactNavbar
+      ? Column(
+          children: [
+            // BARIS PERTAMA: LOGO DAN LOGOUT
+            Row(
+              children: [
+                const Text(
+                  'DelicId',
+                  style: TextStyle(
+                    fontFamily: 'Diplomata',
+                    fontSize: 28,
+                    color: Color(0xFF493B32),
                   ),
                 ),
+
+                const Spacer(),
+
+                IconButton(
+                  tooltip: 'Logout',
+                  onPressed: () {
+                    Navigator.popUntil(
+                      context,
+                      (route) => route.isFirst,
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.power_settings_new,
+                    color: Color(0xFF493B32),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 8),
+
+            // BARIS KEDUA: MENU NAVBAR
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  _navItem(context, 'Home', false),
+                  _navItem(context, 'About Us', false),
+                  _navItem(context, 'Recipe', false),
+                  _navItem(context, 'Cooking Class', true),
+                  _navItem(context, 'Profil', false),
+                ],
+              ),
+            ),
+          ],
+        )
+
+      // NAVBAR DESKTOP
+      : Row(
+          children: [
+            const Text(
+              'DelicId',
+              style: TextStyle(
+                fontFamily: 'Diplomata',
+                fontSize: 28,
+                color: Color(0xFF493B32),
+              ),
+            ),
+
+            const Spacer(),
+
+            _navItem(context, 'Home', false),
+            _navItem(context, 'About Us', false),
+            _navItem(context, 'Recipe', false),
+          _navItem(context, 'Cooking Class', true),
+            _navItem(context, 'Profil', false),
+
+            const SizedBox(width: 15),
+
+            IconButton(
+              tooltip: 'Logout',
+              onPressed: () {
+                Navigator.popUntil(
+                  context,
+                  (route) => route.isFirst,
+                );
+              },
+              icon: const Icon(
+                Icons.power_settings_new,
+                color: Color(0xFF493B32),
+              ),
+            ),
+          ],
+        ),
+),
 
                 // =====================================================
                 // HEADER
                 // =====================================================
 
                 Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 45,
-                    horizontal: 30,
+                   width: double.infinity,
+                  padding: EdgeInsets.symmetric(
+                    vertical: isMobile ? 25 : 45,
+                    horizontal: isMobile ? 16 : 30,
                   ),
                   child: Column(
                     children: [
-                      const Text(
+                      Text(
                         'Cooking Class',
                         style: TextStyle(
-                          fontSize: 48,
+                          fontSize: isMobile ? 32 : 48,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF493B32),
                         ),
@@ -236,7 +269,7 @@ class CookingClassPage extends StatelessWidget {
 
                       // SEARCH
                       SizedBox(
-                        width: 470,
+                        width: isMobile ? screenWidth * 0.9 : 470,
                         child: TextField(
                           decoration: InputDecoration(
                             hintText: 'Cari kelas memasak...',
@@ -266,8 +299,8 @@ class CookingClassPage extends StatelessWidget {
                 // =====================================================
 
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 70,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isMobile ? 16 : 70,
                   ),
                   child: Row(
                     children: [
@@ -310,8 +343,8 @@ class CookingClassPage extends StatelessWidget {
                 // =====================================================
 
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 70,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isMobile ? 16 : 70,
                   ),
                   child: ListView.separated(
                     shrinkWrap: true,
@@ -324,6 +357,7 @@ class CookingClassPage extends StatelessWidget {
                       return _classListCard(
                         context,
                         classes[index],
+                        isMobile: isMobile,
                       );
                     },
                   ),
@@ -386,11 +420,12 @@ class CookingClassPage extends StatelessWidget {
 
   Widget _classListCard(
     BuildContext context,
-    Map<String, dynamic> cookingClass,
-  ) {
+    Map<String, dynamic> cookingClass, {
+    required bool isMobile,
+  }) {
     return Container(
       width: double.infinity,
-      height: 150,
+      height: isMobile ? null : 150,
       decoration: BoxDecoration(
         color: const Color(0xFFB89580).withValues(alpha: 0.82),
         borderRadius: BorderRadius.circular(14),
@@ -402,27 +437,93 @@ class CookingClassPage extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
-        children: [
-          // GAMBAR
+      child: isMobile
+          ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
           ClipRRect(
-            borderRadius: const BorderRadius.horizontal(
-              left: Radius.circular(14),
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(14),
             ),
             child: cookingClass['image'].toString().startsWith('assets/')
                 ? Image.asset(
                     cookingClass['image'],
-                    width: 190,
-                    height: 150,
+                    width: double.infinity,
+                    height: 160,
                     fit: BoxFit.cover,
                   )
                 : Image.network(
                     cookingClass['image'],
-                    width: 190,
-                    height: 150,
+                    width: double.infinity,
+                    height: 160,
                     fit: BoxFit.cover,
                   ),
           ),
+          // NAMA KELAS MOBILE
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              cookingClass['name'],
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF493B32),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              '${cookingClass['date']}  |  ${cookingClass['time']}  |  ⭐ ${cookingClass['rating']}',
+              style: const TextStyle(
+                fontSize: 12,
+                color: Color(0xFF66564C),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  _showClassDetail(context, cookingClass);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF493B32),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+                child: const Text('Lihat'),
+              ),
+            ),
+          ),
+        ],
+      )
+        : Row(
+            children: [
+              // GAMBAR
+              ClipRRect(
+                borderRadius: const BorderRadius.horizontal(
+                  left: Radius.circular(14),
+                ),
+                child: cookingClass['image'].toString().startsWith('assets/')
+                    ? Image.asset(
+                        cookingClass['image'],
+                        width: 190,
+                        height: 150,
+                        fit: BoxFit.cover,
+                      )
+                    : Image.network(
+                        cookingClass['image'],
+                        width: 190,
+                        height: 150,
+                        fit: BoxFit.cover,
+                      ),
+              ),
 
           // INFORMASI KELAS
           Expanded(
@@ -728,12 +829,13 @@ class CookingClassPage extends StatelessWidget {
         return Dialog(
           backgroundColor: Colors.transparent,
           child: Container(
-            width: 550,
+            width: MediaQuery.of(context).size.width * 0.9,
             decoration: BoxDecoration(
               color: const Color(0xFFF8F3EA),
               borderRadius:
                   BorderRadius.circular(20),
             ),
+            child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -915,11 +1017,12 @@ class CookingClassPage extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        );
-      },
-    );
-  }
+          ), // penutup SingleChildScrollView
+        ), // penutup Container
+      ); // penutup Dialog
+    },
+  );
+}
 
   // =========================================================
   // NAVBAR

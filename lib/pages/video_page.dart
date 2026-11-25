@@ -10,6 +10,9 @@ class VideoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isMobile = screenWidth < 768;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F3EA),
 
@@ -21,8 +24,8 @@ class VideoPage extends StatelessWidget {
 
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 50,
+            padding: EdgeInsets.symmetric(
+              horizontal: isMobile ? 16 : 50,
               vertical: 18,
             ),
             decoration: const BoxDecoration(
@@ -69,82 +72,98 @@ class VideoPage extends StatelessWidget {
             child: Center(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.all(40),
+                  padding: EdgeInsets.all(
+                    isMobile ? 16 : 40,
+                  ),
                   child: Column(
                     children: [
+                      // JUDUL KELAS
                       Text(
                         className,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 32,
+                        style: TextStyle(
+                          fontSize: isMobile ? 24 : 32,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF493B32),
+                          color: const Color(0xFF493B32),
                         ),
                       ),
 
                       const SizedBox(height: 25),
 
                       // =================================================
-                      // TEMPAT VIDEO
+                      // TEMPAT VIDEO RESPONSIF (ASPECT RATIO 16:9)
                       // =================================================
 
-                      Container(
-                        width: 850,
-                        height: 470,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF493B32)
-                               .withValues(alpha: 0.92),
-                          borderRadius:
-                              BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color:
-                                 Colors.black.withValues(alpha: 0.15),
-                              blurRadius: 15,
-                              offset: const Offset(0, 6),
-                            ),
-                          ],
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          maxWidth: 850,
                         ),
-                        child: const Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.play_circle_outline,
-                                size: 90,
-                                color: Colors.white,
-                              ),
-
-                              SizedBox(height: 15),
-
-                              Text(
-                                'Video Cooking Class',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 22,
-                                  fontWeight:
-                                      FontWeight.bold,
+                        child: AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF493B32)
+                                  .withValues(alpha: 0.92),
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.15),
+                                  blurRadius: 15,
+                                  offset: const Offset(0, 6),
                                 ),
-                              ),
+                              ],
+                            ),
+                            child: Center(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.play_circle_outline,
+                                    size: isMobile ? 60 : 90,
+                                    color: Colors.white,
+                                  ),
 
-                              SizedBox(height: 8),
+                                  const SizedBox(height: 15),
 
-                              Text(
-                                'Video akan tersedia sesuai jadwal kelas',
-                                style: TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 14,
-                                ),
+                                  Text(
+                                    'Video Cooking Class',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: isMobile ? 16 : 22,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 8),
+
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                    ),
+                                    child: Text(
+                                      'Video akan tersedia sesuai jadwal kelas',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.white70,
+                                        fontSize: isMobile ? 12 : 14,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
 
                       const SizedBox(height: 25),
 
+                      // KETERANGAN VIDEO
                       const Text(
                         'Video pembelajaran akan ditampilkan di sini.',
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Color(0xFF79675B),
                           fontSize: 15,
