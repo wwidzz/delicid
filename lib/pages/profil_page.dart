@@ -19,16 +19,18 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-
   @override
   void initState() {
     super.initState();
-
     FavoriteRecipeData.loadFavorites();
   }
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isMobile = screenWidth < 768;
+    final bool isSmallMobile = screenWidth < 400;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F3EA),
       body: SingleChildScrollView(
@@ -37,11 +39,11 @@ class _ProfilePageState extends State<ProfilePage> {
             // =====================================================
             // NAVBAR
             // =====================================================
-
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 50,
-                vertical: 18,
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(
+                horizontal: isMobile ? 16 : 50,
+                vertical: isMobile ? 12 : 18,
               ),
               decoration: const BoxDecoration(
                 color: Colors.white,
@@ -53,95 +55,104 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ],
               ),
-              child: Row(
-                children: [
-                  const Text(
-                    'DelicId',
-                    style: TextStyle(
-                      fontFamily: 'Diplomata',
-                      fontSize: 28,
-                      color: Color(0xFF493B32),
+              child: isMobile
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'DelicId',
+                              style: TextStyle(
+                                fontFamily: 'Diplomata',
+                                fontSize: 22,
+                                color: Color(0xFF493B32),
+                              ),
+                            ),
+                            IconButton(
+                              tooltip: 'Logout',
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                              onPressed: () {
+                                Navigator.popUntil(
+                                  context,
+                                  (route) => route.isFirst,
+                                );
+                              },
+                              icon: const Icon(
+                                Icons.power_settings_new,
+                                color: Color(0xFF493B32),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: _buildNavItems(context, isMobile: true),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Row(
+                      children: [
+                        const Text(
+                          'DelicId',
+                          style: TextStyle(
+                            fontFamily: 'Diplomata',
+                            fontSize: 28,
+                            color: Color(0xFF493B32),
+                          ),
+                        ),
+                        const Spacer(),
+                        ..._buildNavItems(context, isMobile: false),
+                        const SizedBox(width: 15),
+                        IconButton(
+                          tooltip: 'Logout',
+                          onPressed: () {
+                            Navigator.popUntil(
+                              context,
+                              (route) => route.isFirst,
+                            );
+                          },
+                          icon: const Icon(
+                            Icons.power_settings_new,
+                            color: Color(0xFF493B32),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-
-                  const Spacer(),
-
-                  _navItem(
-                    context,
-                    'Home',
-                    false,
-                  ),
-
-                  _navItem(
-                    context,
-                    'About Us',
-                    false,
-                  ),
-
-                  _navItem(
-                    context,
-                    'Recipe',
-                    false,
-                  ),
-
-                  _navItem(
-                    context,
-                    'Cooking Class',
-                    false,
-                  ),
-
-                  _navItem(
-                    context,
-                    'Profil',
-                    true,
-                  ),
-
-                  const SizedBox(width: 15),
-
-                  IconButton(
-                    tooltip: 'Logout',
-                    onPressed: () {
-                      Navigator.popUntil(
-                        context,
-                        (route) => route.isFirst,
-                      );
-                    },
-                    icon: const Icon(
-                      Icons.power_settings_new,
-                      color: Color(0xFF493B32),
-                    ),
-                  ),
-                ],
-              ),
             ),
 
             // =====================================================
             // JUDUL PROFIL
             // =====================================================
-
-            const SizedBox(height: 45),
-
-            const Text(
-              'Profil',
-              style: TextStyle(
-                fontSize: 42,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF493B32),
+            SizedBox(height: isMobile ? 28 : 45),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 24),
+              child: Text(
+                'Profil',
+                style: TextStyle(
+                  fontSize: isMobile ? 32 : 42,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF493B32),
+                ),
               ),
             ),
 
-            const SizedBox(height: 30),
+            SizedBox(height: isMobile ? 22 : 30),
 
             // =====================================================
             // FOTO PROFIL
             // =====================================================
-
             Stack(
               clipBehavior: Clip.none,
               children: [
                 Container(
-                  width: 150,
-                  height: 150,
+                  width: isMobile ? 120 : 150,
+                  height: isMobile ? 120 : 150,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
@@ -149,12 +160,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       width: 4,
                     ),
                   ),
-                  child: const CircleAvatar(
-                    backgroundColor: Color(0xFFE2D3C5),
+                  child: CircleAvatar(
+                    backgroundColor: const Color(0xFFE2D3C5),
                     child: Icon(
                       Icons.person,
-                      size: 85,
-                      color: Color(0xFF79675B),
+                      size: isMobile ? 68 : 85,
+                      color: const Color(0xFF79675B),
                     ),
                   ),
                 ),
@@ -162,22 +173,21 @@ class _ProfilePageState extends State<ProfilePage> {
                 // =================================================
                 // TOMBOL EDIT FOTO
                 // =================================================
-
                 Positioned(
                   right: -2,
                   bottom: 2,
                   child: Container(
-                    width: 45,
-                    height: 45,
+                    width: isMobile ? 38 : 45,
+                    height: isMobile ? 38 : 45,
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       color: Color(0xFF493B32),
                     ),
                     child: IconButton(
                       tooltip: 'Edit Foto',
+                      padding: EdgeInsets.zero,
                       onPressed: () {
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text(
                               'Fitur mengganti foto akan dibuat selanjutnya.',
@@ -185,9 +195,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         );
                       },
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.edit,
-                        size: 20,
+                        size: isMobile ? 18 : 20,
                         color: Colors.white,
                       ),
                     ),
@@ -201,24 +211,28 @@ class _ProfilePageState extends State<ProfilePage> {
             // =====================================================
             // NAMA AKUN
             // =====================================================
-
-            Text(
-              widget.username,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF493B32),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 24),
+              child: Text(
+                widget.username,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: isMobile ? 20 : 24,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF493B32),
+                ),
               ),
             ),
 
-            const SizedBox(height: 45),
+            SizedBox(height: isMobile ? 28 : 45),
 
             // =====================================================
             // MENU PROFIL
             // =====================================================
-
             _profileMenu(
               context,
+              isMobile: isMobile,
+              isSmallMobile: isSmallMobile,
               icon: Icons.favorite_border,
               title: 'Resep yang Disukai',
               onTap: () {
@@ -231,10 +245,12 @@ class _ProfilePageState extends State<ProfilePage> {
               },
             ),
 
-            const SizedBox(height: 18),
+            SizedBox(height: isMobile ? 12 : 18),
 
             _profileMenu(
               context,
+              isMobile: isMobile,
+              isSmallMobile: isSmallMobile,
               icon: Icons.bookmark_border,
               title: 'Resep yang Disimpan',
               onTap: () {
@@ -247,10 +263,12 @@ class _ProfilePageState extends State<ProfilePage> {
               },
             ),
 
-            const SizedBox(height: 18),
+            SizedBox(height: isMobile ? 12 : 18),
 
             _profileMenu(
               context,
+              isMobile: isMobile,
+              isSmallMobile: isSmallMobile,
               icon: Icons.restaurant_menu,
               title: 'Kelas yang Diikuti',
               onTap: () {
@@ -264,15 +282,14 @@ class _ProfilePageState extends State<ProfilePage> {
               },
             ),
 
-            const SizedBox(height: 70),
+            SizedBox(height: isMobile ? 44 : 70),
 
             // =====================================================
             // FOOTER
             // =====================================================
-
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(35),
+              padding: EdgeInsets.all(isMobile ? 24 : 35),
               color: const Color(0xFF493B32),
               child: const Column(
                 children: [
@@ -284,9 +301,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       color: Colors.white,
                     ),
                   ),
-
                   SizedBox(height: 8),
-
                   Text(
                     'Cooking & Bakery',
                     style: TextStyle(
@@ -295,9 +310,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       color: Colors.white70,
                     ),
                   ),
-
                   SizedBox(height: 8),
-
                   Text(
                     '© 2026 DelicId',
                     style: TextStyle(
@@ -313,15 +326,13 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  
   // =========================================================
   // MENAMPILKAN RESEP YANG DISUKAI DAN DISIMPAN
   // =========================================================
-
   void _showRecipeList(
     BuildContext context,
     String title,
-    ValueNotifier<List<Map<String, dynamic>>> recipes,
+    ValueNotifier<List> recipes,
     IconData icon,
   ) {
     Navigator.push(
@@ -340,8 +351,7 @@ class _ProfilePageState extends State<ProfilePage> {
               foregroundColor: const Color(0xFF493B32),
               elevation: 0,
             ),
-            body: ValueListenableBuilder<
-                List<Map<String, dynamic>>>(
+            body: ValueListenableBuilder<List>(
               valueListenable: recipes,
               builder: (context, recipeList, child) {
                 if (recipeList.isEmpty) {
@@ -365,24 +375,19 @@ class _ProfilePageState extends State<ProfilePage> {
                   itemBuilder: (context, index) {
                     final recipe = recipeList[index];
 
-                    // Cari data resep lengkap berdasarkan nama.
                     final detailRecipe = recipeData.firstWhere(
                       (item) => item['name'] == recipe['name'],
                       orElse: () => recipe,
                     );
 
-                    // Ambil gambar dari data resep lengkap.
-                    final imagePath = (
-                      detailRecipe['image'] ??
-                      recipe['image'] ??
-                      ''
-                    ).toString();
+                    final imagePath = (detailRecipe['image'] ??
+                            recipe['image'] ??
+                            '')
+                        .toString();
 
                     return Container(
                       height: 116,
-                      margin: const EdgeInsets.only(
-                        bottom: 12,
-                      ),
+                      margin: const EdgeInsets.only(bottom: 12),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(14),
@@ -407,9 +412,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 child: imagePath.isEmpty
                                     ? _emptyRecipeImage()
                                     : Image(
-                                        image: _recipeImageProvider(
-                                          imagePath,
-                                        ),
+                                        image: _recipeImageProvider(imagePath),
                                         fit: BoxFit.cover,
                                         errorBuilder: (
                                           context,
@@ -431,14 +434,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                 vertical: 9,
                               ),
                               child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    recipe['name']?.toString() ??
-                                        'Resep',
+                                    recipe['name']?.toString() ?? 'Resep',
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(
@@ -447,7 +447,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                       color: Color(0xFF493B32),
                                     ),
                                   ),
-
                                   const SizedBox(height: 5),
 
                                   // RATING BINTANG
@@ -460,11 +459,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                       const SizedBox(width: 4),
                                       Text(
-                                        (
-                                          detailRecipe['rating'] ??
-                                          recipe['rating'] ??
-                                          '-'
-                                        ).toString(),
+                                        (detailRecipe['rating'] ??
+                                                recipe['rating'] ??
+                                                '-')
+                                            .toString(),
                                         style: const TextStyle(
                                           fontSize: 12,
                                           color: Color(0xFF493B32),
@@ -472,7 +470,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                     ],
                                   ),
-
                                   const SizedBox(height: 5),
 
                                   // TOMBOL LIHAT
@@ -491,18 +488,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                         );
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            const Color(0xFF493B32),
+                                        backgroundColor: const Color(0xFF493B32),
                                         foregroundColor: Colors.white,
                                         elevation: 0,
-                                        padding:
-                                            const EdgeInsets.symmetric(
+                                        padding: const EdgeInsets.symmetric(
                                           horizontal: 15,
                                         ),
                                         minimumSize: Size.zero,
                                         tapTargetSize:
-                                            MaterialTapTargetSize
-                                                .shrinkWrap,
+                                            MaterialTapTargetSize.shrinkWrap,
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(20),
@@ -510,9 +504,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                       child: const Text(
                                         'Lihat',
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                        ),
+                                        style: TextStyle(fontSize: 11),
                                       ),
                                     ),
                                   ),
@@ -535,7 +527,6 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  // Menampilkan pengganti jika gambar gagal dimuat.
   Widget _emptyRecipeImage() {
     return Container(
       color: const Color(0xFFEFD5B8),
@@ -548,38 +539,36 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  // Memilih gambar dari URL atau asset lokal.
   ImageProvider _recipeImageProvider(String path) {
-    if (path.startsWith('http://') ||
-        path.startsWith('https://')) {
+    if (path.startsWith('http://') || path.startsWith('https://')) {
       return NetworkImage(path);
     }
-
     return AssetImage(path);
   }
 
   // =========================================================
   // MENU PROFIL
   // =========================================================
-
   Widget _profileMenu(
     BuildContext context, {
+    required bool isMobile,
+    required bool isSmallMobile,
     required IconData icon,
     required String title,
     required VoidCallback onTap,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 150,
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 16 : 150,
       ),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(15),
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 25,
-            vertical: 22,
+          padding: EdgeInsets.symmetric(
+            horizontal: isSmallMobile ? 14 : (isMobile ? 18 : 25),
+            vertical: isMobile ? 16 : 22,
           ),
           decoration: BoxDecoration(
             color: Colors.white,
@@ -595,28 +584,32 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Row(
             children: [
               Container(
-                width: 48,
-                height: 48,
+                width: isMobile ? 42 : 48,
+                height: isMobile ? 42 : 48,
                 decoration: BoxDecoration(
                   color: const Color(0xFFE8D9CC),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
                   icon,
-                  size: 26,
+                  size: isMobile ? 22 : 26,
                   color: const Color(0xFF493B32),
                 ),
               ),
-
-              const SizedBox(width: 18),
-
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF493B32),
+              SizedBox(width: isMobile ? 12 : 18),
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: isSmallMobile ? 15 : (isMobile ? 16 : 18),
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF493B32),
+                  ),
                 ),
+              ),
+              Icon(
+                Icons.chevron_right,
+                color: const Color(0xFF493B32).withValues(alpha: 0.6),
               ),
             ],
           ),
@@ -628,108 +621,87 @@ class _ProfilePageState extends State<ProfilePage> {
   // =========================================================
   // NAVBAR
   // =========================================================
+  List<Widget> _buildNavItems(BuildContext context, {required bool isMobile}) {
+    final items = ['Home', 'About Us', 'Recipe', 'Cooking Class', 'Profil'];
+    return items.map((title) {
+      return _navItem(context, title, title == 'Profil', isMobile: isMobile);
+    }).toList();
+  }
 
   Widget _navItem(
     BuildContext context,
     String title,
-    bool active,
-  ) {
+    bool active, {
+    required bool isMobile,
+  }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: isMobile ? 6 : 10),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextButton(
+            style: isMobile
+                ? TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  )
+                : null,
             onPressed: () {
-              // HOME
               if (title == 'Home') {
                 Navigator.popUntil(
                   context,
                   (route) => route.isFirst,
                 );
-              }
-
-              // ABOUT US
-              else if (title == 'About Us') {
+              } else if (title == 'About Us') {
                 Navigator.push(
                   context,
                   PageRouteBuilder(
-                    pageBuilder:
-                        (
-                          context,
-                          animation,
-                          secondaryAnimation,
-                        ) =>
-                            const AboutUsPage(),
-                    transitionDuration:
-                        Duration.zero,
-                    reverseTransitionDuration:
-                        Duration.zero,
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        const AboutUsPage(),
+                    transitionDuration: Duration.zero,
+                    reverseTransitionDuration: Duration.zero,
                   ),
                 );
-              }
-
-              // RECIPE
-              else if (title == 'Recipe') {
+              } else if (title == 'Recipe') {
                 Navigator.push(
                   context,
                   PageRouteBuilder(
-                    pageBuilder:
-                        (
-                          context,
-                          animation,
-                          secondaryAnimation,
-                        ) =>
-                            const RecipePage(),
-                    transitionDuration:
-                        Duration.zero,
-                    reverseTransitionDuration:
-                        Duration.zero,
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        const RecipePage(),
+                    transitionDuration: Duration.zero,
+                    reverseTransitionDuration: Duration.zero,
                   ),
                 );
-              }
-
-              // COOKING CLASS
-              else if (title == 'Cooking Class') {
+              } else if (title == 'Cooking Class') {
                 Navigator.push(
                   context,
                   PageRouteBuilder(
-                    pageBuilder:
-                        (
-                          context,
-                          animation,
-                          secondaryAnimation,
-                        ) =>
-                            const CookingClassPage(),
-                    transitionDuration:
-                        Duration.zero,
-                    reverseTransitionDuration:
-                        Duration.zero,
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        const CookingClassPage(),
+                    transitionDuration: Duration.zero,
+                    reverseTransitionDuration: Duration.zero,
                   ),
                 );
-              }
-
-              // PROFIL
-              else if (title == 'Profil') {
+              } else if (title == 'Profil') {
                 // Sudah berada di halaman Profil.
               }
             },
             child: Text(
               title,
               style: TextStyle(
+                fontSize: isMobile ? 13 : 14,
                 color: const Color(0xFF493B32),
-                fontWeight: active
-                    ? FontWeight.bold
-                    : FontWeight.w600,
+                fontWeight: active ? FontWeight.bold : FontWeight.w600,
               ),
             ),
           ),
-
           if (active)
             Container(
-              width: 50,
+              width: isMobile ? 36 : 50,
               height: 2,
               color: const Color(0xFF493B32),
             ),

@@ -9,10 +9,10 @@ class CustomAlert {
     required ContentType type,
   }) {
     final Color customBrownColor = type == ContentType.success
-        ? const Color.fromARGB(255, 58, 74, 50)
+        ? const Color.fromARGB(221, 65, 74, 50)
         : type == ContentType.warning
-            ? const Color(0xFF8B5E34)
-            : const Color.fromARGB(255, 122, 61, 56);
+            ? const Color.fromRGBO(105, 75, 18, 1)
+            : const Color.fromARGB(234, 122, 63, 56);
 
     final IconData iconData = type == ContentType.success
         ? Icons.check_circle_outline
